@@ -21,7 +21,7 @@ namespace Src
             while (contextApplication.ShouldWork){
                 
                 Console.Write(contextApplication.GetPath());
-                string currentInput = Console.ReadLine();
+                string currentInput = Console.ReadLine();              
 
                 if (!string.IsNullOrEmpty(currentInput)){
                     if (commandDictionary.ContainsKey(currentInput))
