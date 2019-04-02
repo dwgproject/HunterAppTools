@@ -4,7 +4,7 @@ namespace HuntingAppSupport.Infrastructure{
 
     public interface IDirectory{
         string Name { get; }
-        IEnumerable<ICommand> Commands { get; }
-        IEnumerable<IDirectory> Directories { get; }
+        IDictionary<string, ICommand> Commands { get; }
+        IDictionary<string, IDirectory> Directories { get; }
     }
 }

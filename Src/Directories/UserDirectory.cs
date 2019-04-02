@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using HuntingAppSupport.Commands;
 using HuntingAppSupport.Infrastructure;
 
 namespace HuntingAppSupport.Directories{
@@ -7,16 +8,17 @@ namespace HuntingAppSupport.Directories{
     {
         public string Name => "User";
 
-        public IEnumerable<ICommand> Commands { get; private set; }
-
-        public IEnumerable<IDirectory> Directories { get; private set; }
         public string Description { get; set ; } = "Wejście do modułu usera.";
+
+        public IDictionary<string, ICommand> Commands { get; private set; }
+
+        public IDictionary<string, IDirectory> Directories { get; private set; }
 
         public UserDirectory()
         {
-            Commands = new List<ICommand>();
-            Directories = new List<IDirectory>();
-
+            Commands = new Dictionary<string, ICommand>();
+            Commands.Add("add", new AddUserCommand());
+            Directories = new Dictionary<string, IDirectory>();
         }
 
         public CommandResult Execute(ContextApplication context)
