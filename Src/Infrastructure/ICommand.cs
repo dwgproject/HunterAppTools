@@ -1,6 +1,6 @@
 namespace HuntingAppSupport.Infrastructure{
     public interface ICommand{
-        string Description {get; set;}
+        string Description {get;}
         CommandResult Execute(ContextApplication context);
     }
 }

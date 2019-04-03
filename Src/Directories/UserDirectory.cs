@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using HuntingAppSupport.Commands;
 using HuntingAppSupport.Infrastructure;
@@ -10,14 +11,14 @@ namespace HuntingAppSupport.Directories{
 
         public string Description { get; set ; } = "Wejście do modułu usera.";
 
-        public IDictionary<string, ICommand> Commands { get; private set; }
+        public IDictionary<string, Type> Commands { get; private set; }
 
         public IDictionary<string, IDirectory> Directories { get; private set; }
 
         public UserDirectory()
         {
-            Commands = new Dictionary<string, ICommand>();
-            Commands.Add("add", new AddUserCommand());
+            Commands = new Dictionary<string, Type>();
+            Commands.Add("add", typeof(AddUserCommand));
             Directories = new Dictionary<string, IDirectory>();
         }
 

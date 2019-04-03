@@ -1,17 +1,21 @@
+using System.Collections.Generic;
 using CommandLine;
 using HuntingAppSupport.Infrastructure;
+using System.Linq;
 
 namespace HuntingAppSupport.Commands{
 
     public abstract class BaseCommand<TArgs> : ICommand
     {
-        private readonly string [] args;
         private TArgs arguments;
-        public BaseCommand(string [] args)
+        private IEnumerable<Error> errors;
+        public BaseCommand(object [] args)
         {
-            Parser.Default.ParseArguments<TArgs>(args)
+            string [] @params = args.Cast<string>().ToArray();
+            errors = new List<Error>();
+            Parser.Default.ParseArguments<TArgs>(@params)
                                 .WithParsed<TArgs>((o) => arguments = o)
-                                 .WithNotParsed((errs) => {});
+                                 .WithNotParsed((errs) => errors = errs);
 
         }
 
@@ -19,7 +23,15 @@ namespace HuntingAppSupport.Commands{
 
         public CommandResult Execute(ContextApplication context)
         {
-            return Execute(context, arguments);
+            if (errors.Count() == 0){
+                return Execute(context, arguments);
+
+            }else{
+                
+            }
+                
+
+            return new CommandResult("Problem with parsing arguments.");
         }
 
         protected abstract CommandResult Execute(ContextApplication context, TArgs arguments);

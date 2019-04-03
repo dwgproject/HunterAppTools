@@ -14,10 +14,7 @@ namespace Src
             ContextApplication contextApplication = new ContextApplication();
             Console.WriteLine("Program wspomagający testowanie HuntingApp");
             
-           
-
-            while (contextApplication.ShouldWork){
-                
+            while (contextApplication.ShouldWork){              
                 Console.Write(contextApplication.GetPath());
                 string currentInput = Console.ReadLine();
 
@@ -35,33 +32,46 @@ namespace Src
                         commandArgs = new string[paremetersLength];
                         Array.Copy(inputCommands, index, commandArgs, 0, paremetersLength);
                         break;
-                    }else
+                    }
+                    else
                     {
                         commandsQueue.Enqueue(command);
                     }
                 }
 
-                if (commandsQueue.Count == 1)
+                foreach (string call in commandsQueue)
                 {
-                    ICommand command = contextApplication.GetCommandIfExist(commandsQueue.Dequeue());
-                    if (command != null)
-                        command.Execute(contextApplication);
-                    else 
-                        Console.WriteLine("Uknown command.");
-                }
-                else if (commandsQueue.Count > 1)
-                {
-                    foreach (string call in commandsQueue)
-                    {
-                        ICommand command = contextApplication.GetCommandIfExist(commandsQueue.Dequeue());
-                        if (command != null)
-                            command.Execute(contextApplication);
-                        else 
-                            Console.WriteLine("Uknown command.");
-                            break;
-                    }
+                    ICommand currentCommand = contextApplication.GetCommandIfExist(call, commandArgs);
+                    CommandResult result = currentCommand.Execute(contextApplication);
+                    if (!string.IsNullOrEmpty(result.Message))
+                        Console.WriteLine(result.Message);
+                    if (currentCommand is DummyCommand)
+                        break;
                 }
             }
         }
     }
 }
+
+
+                // // if (commandsQueue.Count == 1)
+                // // {
+                // //     currentCommand = contextApplication.GetCommandIfExist(commandsQueue.Dequeue());
+                    
+                // // }
+                // // else if (commandsQueue.Count > 1)
+                // // {
+                // //     foreach (string call in commandsQueue)
+                // //     {
+                // //         currentCommand = contextApplication.GetCommandIfExist(commandsQueue.Dequeue());
+                // //     }
+                // // }
+
+                // try{
+                //     // foreach (ICommand commandQueue
+
+                //     // CommandResult result = currentCommand.Execute(contextApplication);
+                //     // Console.WriteLine(result.Message);
+                // }catch(Exception ex){
+                //     Console.WriteLine(ex.Message);
+                // }

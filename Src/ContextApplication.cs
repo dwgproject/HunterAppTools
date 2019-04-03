@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Text;
 using HuntingAppSupport.Commands;
@@ -7,17 +8,17 @@ using HuntingAppSupport.Infrastructure;
 namespace HuntingAppSupport{
     public class ContextApplication{
         public Stack<IDirectory> directoryStack;
-        IDictionary<string, ICommand> commandDictionary = new Dictionary<string, ICommand>();
+        IDictionary<string, Type> generalCommands = new Dictionary<string, Type>();
 
         public bool ShouldWork { get; set; } = true;
 
         public ContextApplication()
         {
             directoryStack = new Stack<IDirectory>();
-            commandDictionary.Add("exit", new ExitCommand());
-            commandDictionary.Add("help", new HelpCommand());
-            commandDictionary.Add("user", new UserDirectory());
-            commandDictionary.Add("up", new BackCommand());
+            generalCommands.Add("exit", typeof(ExitCommand));
+            generalCommands.Add("help", typeof(HelpCommand));
+            generalCommands.Add("user", typeof(UserDirectory));
+            generalCommands.Add("up", typeof(BackCommand));
         }
 
         public void PushDirectory(IDirectory directory){
@@ -37,15 +38,30 @@ namespace HuntingAppSupport{
                 builder.Append(item.Name);
             }
         
-            return string.Concat(builder.ToString(), "> ");
+            return string.Concat(builder.ToString(), "()-> ");
         }
 
-        public ICommand GetCommandIfExist(string name){
-            if (commandDictionary.ContainsKey(name))
-                return commandDictionary[name];
-            if (directoryStack.Count > 0 && directoryStack.Peek().Commands.ContainsKey(name))
-                return directoryStack.Peek().Commands[name];
-            return null;
+        public ICommand GetCommandIfExist(string name, string [] args){
+            Type type = null;
+            if (generalCommands.ContainsKey(name)){
+                type = generalCommands[name];
+            }
+            else
+            {
+                IDirectory current = null;
+                if (directoryStack.TryPeek(out current) && current.Commands.ContainsKey(name)){
+                    type = current.Commands[name];
+                }
+            }
+
+            try{
+                if (type != null)
+                    return (ICommand)Activator.CreateInstance(type, args);
+            }catch(Exception ex){
+                Console.WriteLine(ex.Message);
+                return new DummyCommand();
+            }
+            return new DummyCommand();
         }
     }
 }
