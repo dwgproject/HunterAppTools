@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using CommandLine;
 using HuntingAppSupport.Infrastructure;
 
@@ -9,7 +10,7 @@ namespace HuntingAppSupport.Commands{
         public AddUserCommand(): base(new string [0]){
             
         }
-        public AddUserCommand(object[] args) : base(args)
+        public AddUserCommand(IList<string> args) : base(args)
         {
             Description = "Metoda dodaje użytkownika.";
         }

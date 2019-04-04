@@ -21,7 +21,7 @@ namespace Src
                 if (string.IsNullOrEmpty(currentInput))
                     continue;
 
-                string[] commandArgs = new string[0];
+                IList<string> commandArgs = new List<string>();
                 Queue<string> commandsQueue = new Queue<string>();
                 string [] inputCommands = currentInput.Split(' ');
                 foreach(string command in inputCommands){
@@ -29,8 +29,9 @@ namespace Src
                     {
                         int index = Array.IndexOf(inputCommands, command);
                         int paremetersLength = inputCommands.Length - index;
-                        commandArgs = new string[paremetersLength];
-                        Array.Copy(inputCommands, index, commandArgs, 0, paremetersLength);
+                        for (int i = index; i <= paremetersLength; i++){
+                            commandArgs.Add(inputCommands[i]);
+                        }
                         break;
                     }
                     else
@@ -40,7 +41,7 @@ namespace Src
                 }
 
                 foreach (string call in commandsQueue)
-                {
+                {}
                     ICommand currentCommand = contextApplication.GetCommandIfExist(call, commandArgs);
                     CommandResult result = currentCommand.Execute(contextApplication);
                     if (!string.IsNullOrEmpty(result.Message))

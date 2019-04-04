@@ -41,7 +41,7 @@ namespace HuntingAppSupport{
             return string.Concat(builder.ToString(), "()-> ");
         }
 
-        public ICommand GetCommandIfExist(string name, string [] args){
+        public ICommand GetCommandIfExist(string name, IList<string> args){
             Type type = null;
             if (generalCommands.ContainsKey(name)){
                 type = generalCommands[name];
@@ -56,7 +56,7 @@ namespace HuntingAppSupport{
 
             try{
                 if (type != null)
-                    return (ICommand)Activator.CreateInstance(type, args);
+                    return args.Count == 0 ? (ICommand)Activator.CreateInstance(type) : (ICommand)Activator.CreateInstance(type, args);
             }catch(Exception ex){
                 Console.WriteLine(ex.Message);
                 return new DummyCommand();

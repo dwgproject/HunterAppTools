@@ -9,11 +9,10 @@ namespace HuntingAppSupport.Commands{
     {
         private TArgs arguments;
         private IEnumerable<Error> errors;
-        public BaseCommand(object [] args)
+        public BaseCommand(IList<string> args)
         {
-            string [] @params = args.Cast<string>().ToArray();
             errors = new List<Error>();
-            Parser.Default.ParseArguments<TArgs>(@params)
+            Parser.Default.ParseArguments<TArgs>(args.ToArray())
                                 .WithParsed<TArgs>((o) => arguments = o)
                                  .WithNotParsed((errs) => errors = errs);
 
