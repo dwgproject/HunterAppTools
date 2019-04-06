@@ -41,7 +41,7 @@ namespace Src
                 }
 
                 foreach (string call in commandsQueue)
-                {}
+                {
                     ICommand currentCommand = contextApplication.GetCommandIfExist(call, commandArgs);
                     CommandResult result = currentCommand.Execute(contextApplication);
                     if (!string.IsNullOrEmpty(result.Message))
