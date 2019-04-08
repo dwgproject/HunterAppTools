@@ -7,7 +7,10 @@ namespace HuntingAppSupport.Commands{
 
         public CommandResult Execute(ContextApplication context)
         {
+        
             return new CommandResult();
         }
     }
+
+
 }
