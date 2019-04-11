@@ -53,26 +53,3 @@ namespace Src
         }
     }
 }
-
-
-                // // if (commandsQueue.Count == 1)
-                // // {
-                // //     currentCommand = contextApplication.GetCommandIfExist(commandsQueue.Dequeue());
-                    
-                // // }
-                // // else if (commandsQueue.Count > 1)
-                // // {
-                // //     foreach (string call in commandsQueue)
-                // //     {
-                // //         currentCommand = contextApplication.GetCommandIfExist(commandsQueue.Dequeue());
-                // //     }
-                // // }
-
-                // try{
-                //     // foreach (ICommand commandQueue
-
-                //     // CommandResult result = currentCommand.Execute(contextApplication);
-                //     // Console.WriteLine(result.Message);
-                // }catch(Exception ex){
-                //     Console.WriteLine(ex.Message);
-                // }
