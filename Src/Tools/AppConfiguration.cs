@@ -14,14 +14,25 @@ namespace Src.Tools
             this.configuration = configuration;
         }
 
-        public void Push<T>( string key, T value)
+        public void Push<T>(string key, T value)
         {
-            configuration.Add(key, value);
+            if(!configuration.ContainsKey(key)){
+                configuration.Add(key, value);
+            }
+            else{
+                Console.WriteLine($"Key -{key}- already exist");
+            }
+
         }
 
         public void Remove( string key)
         {
-            configuration.Remove(key);
+            if(configuration.ContainsKey(key)){
+                configuration.Remove(key);
+            }
+            else{
+                Console.WriteLine($"Key -{key}- doesn't exist");    
+            }
         }
 
         public void SaveConfiguration(string path)
