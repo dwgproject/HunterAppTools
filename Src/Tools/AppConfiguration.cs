@@ -7,26 +7,26 @@ namespace Src.Tools
 {
     public class AppConfiguration
     {
-        private IDictionary<string, object> configurationDictionary;
+        private IDictionary<string, object> configuration;
 
-        public AppConfiguration()
+        public AppConfiguration(IDictionary<string, object> configuration)
         {
-            configurationDictionary = new Dictionary<string, object>();
+            this.configuration = configuration;
         }
 
-        public void Push<T>(IDictionary<string,object> configuration, string key, T value)
+        public void Push<T>( string key, T value)
         {
             configuration.Add(key, value);
         }
 
-        public void Remove(IDictionary<string,object> configuration, string key)
+        public void Remove( string key)
         {
             configuration.Remove(key);
         }
 
         public void SaveConfiguration(string path)
         {
-            var newConfiguration = JsonConvert.SerializeObject(configurationDictionary, Formatting.Indented);
+            var newConfiguration = JsonConvert.SerializeObject(configuration, Formatting.Indented);
             try{
                 File.WriteAllText(path, newConfiguration);
             }
@@ -50,7 +50,7 @@ namespace Src.Tools
                 }
             }
             else{
-                Console.WriteLine($"File");
+                Console.WriteLine($"File doesn't exist");
                 return result;
             }
             
