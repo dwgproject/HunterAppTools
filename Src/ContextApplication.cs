@@ -19,6 +19,7 @@ namespace HuntingAppSupport{
             generalCommands.Add("help", typeof(HelpCommand));
             generalCommands.Add("user", typeof(UserDirectory));
             generalCommands.Add("up", typeof(BackCommand));
+            generalCommands.Add("configuration", typeof(ConfigurationDirectory));
         }
 
         public void PushDirectory(IDirectory directory){

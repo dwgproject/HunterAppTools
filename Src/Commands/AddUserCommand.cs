@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using CommandLine;
 using HuntingAppSupport.Infrastructure;
 using log4net;
@@ -20,9 +21,8 @@ namespace HuntingAppSupport.Commands{
 
         protected override CommandResult Execute(ContextApplication context, UserArguments arguments)
         {
-            IWinApiConnector connector = context.WinApiConnector;
-            connector.SendRequest();
-
+            //Task<ConnectorResult<User>> result = WinApiConnector.RequestPost<User, User>(new User());
+            
 
             
 

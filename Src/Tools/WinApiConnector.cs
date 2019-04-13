@@ -10,59 +10,101 @@ namespace Src.Tools
     {
         private static HttpClient client = new HttpClient();
 
-        public async static Task<ConnectorResult<TResult>> RequestPost<TData, TResult>(TData data) where TResult : new(){
+        public async static Task<ConnectorResult<TResult>> RequestPost<TData, TResult>(string path, TData data) where TResult : new(){ 
+            if (string.IsNullOrEmpty(path)) return new ConnectorResult<TResult>($"Path is empty.");
             string output = JsonConvert.SerializeObject(data);
             var content = new StringContent(output, Encoding.UTF8, "application/json");
-
             try
             {
-                var response = await client.PostAsync(Parameters.AddRoleUri, content);
+                var response = await client.PostAsync(path, content);
                 if (response.IsSuccessStatusCode){
-
+                    return new ConnectorResult<TResult>();
                 }else{
-
+                    return new ConnectorResult<TResult>($"Occurred code: {response.StatusCode.ToString()}");
                 }
             }
             catch(ArgumentNullException ex)
             {
-                
+                return new ConnectorResult<TResult>(ex.Message);
             }
             catch(HttpRequestException ex)
             {
-
+                return new ConnectorResult<TResult>(ex.Message);
             }
-            var t = new TResult();
-            return new ConnectorResult();
         }
 
-        // public static ConnectorResult<TResult> RequestPut<TData, TResult>(TData data){
-
-        // }
-
-        // public static ConnectorResult<TResult> RequestDelete<TData, TResult>(TData data){
-
-        // }
-
-        public async static Task<ConnectorResult<TResult>> RequestGet<TData, TResult>(TData data){
+        public async static Task<ConnectorResult<TResult>> RequestPut<TData, TResult>(string path, TData data) where TResult : new(){
+            if (string.IsNullOrEmpty(path)) return new ConnectorResult<TResult>($"Path is empty.");
             try
             {
-                HttpResponseMessage response = await client.GetAsync("/Api/Roles");
+                string output = JsonConvert.SerializeObject(data);
+                var requestContent = new StringContent(output, Encoding.UTF8, "application/json");
+                HttpResponseMessage response = await client.PutAsync(path, requestContent);
                 if (response.IsSuccessStatusCode)
                 {
                     string content = await response.Content.ReadAsStringAsync();
                     var result = JsonConvert.DeserializeObject<TResult>(content);
-                    return result;
+                    return new ConnectorResult<TResult>(result);
+                }else{
+                    return new ConnectorResult<TResult>($"Occurred code: {response.StatusCode.ToString()}");
                 }
             }
             catch(ArgumentNullException ex)
             {
-                
+                return new ConnectorResult<TResult>(ex.Message);
             }
             catch(HttpRequestException ex)
             {
-
+                return new ConnectorResult<TResult>(ex.Message);
             }
-            return 
+        }
+
+        public async static Task<ConnectorResult<TResult>> RequestDelete<TData, TResult>(string path) where TResult : new(){
+            if (string.IsNullOrEmpty(path)) return new ConnectorResult<TResult>($"Path is empty.");
+            try
+            {
+                HttpResponseMessage response = await client.DeleteAsync(path);
+                if (response.IsSuccessStatusCode)
+                {
+                    string content = await response.Content.ReadAsStringAsync();
+                    var result = JsonConvert.DeserializeObject<TResult>(content);
+                    return new ConnectorResult<TResult>(result);
+                }else{
+                    return new ConnectorResult<TResult>($"Occurred code: {response.StatusCode.ToString()}");
+                }
+            }
+            catch(ArgumentNullException ex)
+            {
+                return new ConnectorResult<TResult>(ex.Message);
+            }
+            catch(HttpRequestException ex)
+            {
+                return new ConnectorResult<TResult>(ex.Message);
+            }
+        }
+
+        public async static Task<ConnectorResult<TResult>> RequestGet<TData, TResult>(string path, TData data) where TResult : new(){
+            if (string.IsNullOrEmpty(path)) return new ConnectorResult<TResult>($"Path is empty.");
+            try
+            {
+                HttpResponseMessage response = await client.GetAsync(path);
+                if (response.IsSuccessStatusCode)
+                {
+                    string content = await response.Content.ReadAsStringAsync();
+                    var result = JsonConvert.DeserializeObject<TResult>(content);
+                    return new ConnectorResult<TResult>(result);
+                }else{
+                    return new ConnectorResult<TResult>($"Occurred code: {response.StatusCode.ToString()}");
+                }
+            }
+            catch(ArgumentNullException ex)
+            {
+                return new ConnectorResult<TResult>(ex.Message);
+            }
+            catch(HttpRequestException ex)
+            {
+                return new ConnectorResult<TResult>(ex.Message);
+            }
         }
     }
 }
