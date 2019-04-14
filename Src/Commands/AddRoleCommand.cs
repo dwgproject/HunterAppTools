@@ -12,9 +12,9 @@ using Src.Tools;
 
 namespace Src.Commands
 {
-    public class AddRoleCommand : BaseCommand<RoleArguments>
+    public class AddRolesCommand : BaseCommand<RoleArguments>
     {
-        public AddRoleCommand(IList<string> args) : base(args)
+        public AddRolesCommand(IList<string> args) : base(args)
         {
         }
 
