@@ -1,12 +1,16 @@
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using CommandLine;
 using HuntingAppSupport.Infrastructure;
+using log4net;
+using Src.Tools;
 
 namespace HuntingAppSupport.Commands{
 
     public class AddUserCommand : BaseCommand<UserArguments>
     {
+        private readonly ILog logger = LogManager.GetLogger(typeof(AddUserCommand));
         public AddUserCommand(): base(new string [0]){
             
         }
@@ -17,6 +21,11 @@ namespace HuntingAppSupport.Commands{
 
         protected override CommandResult Execute(ContextApplication context, UserArguments arguments)
         {
+            //Task<ConnectorResult<User>> result = WinApiConnector.RequestPost<User, User>(new User());
+            
+
+            
+
             Console.WriteLine($"Dodaje usera. Oto jego dane: {arguments.Name} {arguments.Surname}");
             return new CommandResult();
         }
@@ -31,4 +40,22 @@ namespace HuntingAppSupport.Commands{
         public string Surname {get; set;}
     }
 
+    public class User
+    {
+
+    }
+
 }
+
+
+            // using(IWinApiService<User, UserResult> service = new WinApiPostService<User, UserResult>()){
+            //     try
+            //     {
+            //         service.Send();
+            //     }
+            //     catch(Exception ex)
+            //     {
+            //         if (logger.IsErrorEnabled)
+            //             logger.Error(ex);
+            //     }
+            // }

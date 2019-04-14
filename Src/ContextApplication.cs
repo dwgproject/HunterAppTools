@@ -4,12 +4,12 @@ using System.Text;
 using HuntingAppSupport.Commands;
 using HuntingAppSupport.Directories;
 using HuntingAppSupport.Infrastructure;
+using Src.Tools;
 
 namespace HuntingAppSupport{
-    public class ContextApplication{
+    public class ContextApplication : IDisposable{
         public Stack<IDirectory> directoryStack;
-        IDictionary<string, Type> generalCommands = new Dictionary<string, Type>();
-
+        private IDictionary<string, Type> generalCommands = new Dictionary<string, Type>();
         public bool ShouldWork { get; set; } = true;
 
         public ContextApplication()
@@ -19,6 +19,7 @@ namespace HuntingAppSupport{
             generalCommands.Add("help", typeof(HelpCommand));
             generalCommands.Add("user", typeof(UserDirectory));
             generalCommands.Add("up", typeof(BackCommand));
+            generalCommands.Add("configuration", typeof(ConfigurationDirectory));
         }
 
         public void PushDirectory(IDirectory directory){
@@ -62,6 +63,11 @@ namespace HuntingAppSupport{
                 return new DummyCommand();
             }
             return new DummyCommand();
+        }
+
+        public void Dispose()
+        {
+            
         }
     }
 }
