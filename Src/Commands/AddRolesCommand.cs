@@ -12,25 +12,31 @@ using Src.Tools;
 
 namespace Src.Commands
 {
-    public class AddRolesCommand : BaseCommand<RoleArguments>
+    public class AddRolesCommand : BaseCommand<RolesArguments>
     {
         public AddRolesCommand(IList<string> args) : base(args)
         {
         }
 
-        protected override CommandResult Execute(ContextApplication context, RoleArguments arguments)
+        protected override CommandResult Execute(ContextApplication context, RolesArguments arguments)
         {
-            Console.WriteLine($"Dodaje usera. Oto jego dane: {arguments.Name}");
+            Console.WriteLine($"Dodaje role dla userów z pliku: {arguments.Path}");
             var file = new CsvReader<Role>();
-            var listRoles = file.LoadFile( @"C:\Users\Patryk\Desktop\Role.csv");           
+            if(arguments.Path!=null){
+                var listRoles = file.LoadFile(arguments.Path); 
+            }
+            else{
+                Console.WriteLine($"Ścieżka nieprawidłowa -{arguments.Path}");
+            }
+                      
             return new CommandResult();
         }
 
     }
 
-    public class RoleArguments
+    public class RolesArguments
     {
-        [Option('n', "name", Required=true, HelpText="Nazwa roli")]
-        public string  Name { get; set; }
+        [Option('p', "path", Required=true, HelpText="Ścieżka do pliku z danymi")]
+        public string  Path { get; set; }
     }
 }
