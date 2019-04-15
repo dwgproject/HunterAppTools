@@ -1,9 +1,11 @@
 using System.Collections.Generic;
 using CommandLine;
-using HuntingAppSupport.Infrastructure;
 using System.Linq;
+using Gravityzero.Console.Utility.Infrastructure;
+using Gravityzero.Console.Utility.Context;
 
-namespace HuntingAppSupport.Commands{
+namespace Gravityzero.Console.Utility.Commands
+{
 
     public abstract class BaseCommand<TArgs> : ICommand
     {
@@ -20,7 +22,7 @@ namespace HuntingAppSupport.Commands{
 
         public string Description { get; set; }
 
-        public CommandResult Execute(ContextApplication context)
+        public CommandResult Execute(ConsoleContext context)
         {
             if (errors.Count() == 0){
                 return Execute(context, arguments);
@@ -33,6 +35,6 @@ namespace HuntingAppSupport.Commands{
             return new CommandResult("Problem with parsing arguments.");
         }
 
-        protected abstract CommandResult Execute(ContextApplication context, TArgs arguments);
+        protected abstract CommandResult Execute(ConsoleContext context, TArgs arguments);
     }
 }

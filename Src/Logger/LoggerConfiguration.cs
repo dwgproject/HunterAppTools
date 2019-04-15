@@ -3,7 +3,7 @@ using System.Reflection;
 using System.Xml;
 using log4net;
 
-namespace Src.Logger
+namespace Gravityzero.Console.Utility.Logger
 {
     public static class LoggerConfiguration
     {

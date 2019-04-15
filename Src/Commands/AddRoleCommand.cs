@@ -1,10 +1,11 @@
-using System;
 using System.Collections.Generic;
 using CommandLine;
-using HuntingAppSupport.Infrastructure;
-using Src.Tools;
+using Gravityzero.Console.Utility.Context;
+using Gravityzero.Console.Utility.Infrastructure;
+using Gravityzero.Console.Utility.Model;
+using Gravityzero.Console.Utility.Tools;
 
-namespace HuntingAppSupport.Commands
+namespace Gravityzero.Console.Utility.Commands
 {
 
     public class AddRoleCommand : BaseCommand<RoleArgument>
@@ -13,7 +14,7 @@ namespace HuntingAppSupport.Commands
         {
         }
 
-        protected override CommandResult Execute(ContextApplication context, RoleArgument arguments)
+        protected override CommandResult Execute(ConsoleContext context, RoleArgument arguments)
         {
             Role role = new Role(){ Name = arguments.Name};
             var result = WinApiConnector.RequestPost<Role, Result>("http://localhost:5000/Api/Configuration/AddRole", role);
@@ -26,13 +27,7 @@ namespace HuntingAppSupport.Commands
         [Option('n', "name", Required = true, HelpText = "Nazwa roli.")]
         public string Name { get; set; }
     }
-
-    public class Role
-    {
-        public Guid Identifier {get; set;} = Guid.Empty;
-        public string Name { get; set; }
-    }
-
+    
     public class Result{
 
     }

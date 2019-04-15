@@ -1,6 +1,6 @@
 using System;
 
-namespace Src.Model
+namespace Gravityzero.Console.Utility.Model
 {
     public class Role
     {

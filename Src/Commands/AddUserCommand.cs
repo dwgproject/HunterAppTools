@@ -1,13 +1,11 @@
-using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using CommandLine;
-using HuntingAppSupport.Infrastructure;
+using Gravityzero.Console.Utility.Context;
+using Gravityzero.Console.Utility.Infrastructure;
 using log4net;
-using Src.Tools;
 
-namespace HuntingAppSupport.Commands{
-
+namespace Gravityzero.Console.Utility.Commands
+{
     public class AddUserCommand : BaseCommand<UserArguments>
     {
         private readonly ILog logger = LogManager.GetLogger(typeof(AddUserCommand));
@@ -19,14 +17,14 @@ namespace HuntingAppSupport.Commands{
             Description = "Metoda dodaje użytkownika.";
         }
 
-        protected override CommandResult Execute(ContextApplication context, UserArguments arguments)
+        protected override CommandResult Execute(ConsoleContext context, UserArguments arguments)
         {
             //Task<ConnectorResult<User>> result = WinApiConnector.RequestPost<User, User>(new User());
             
 
             
 
-            Console.WriteLine($"Dodaje usera. Oto jego dane: {arguments.Name} {arguments.Surname}");
+            System.Console.WriteLine($"Dodaje usera. Oto jego dane: {arguments.Name} {arguments.Surname}");
             return new CommandResult();
         }
     }

@@ -2,10 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Gravityzero.Console.Utility.Logger;
 using log4net;
-using Src.Logger;
 
-namespace Src.Tools
+namespace Gravityzero.Console.Utility.Tools
 {
     public class CsvReader<TData>
     {
@@ -26,7 +26,7 @@ namespace Src.Tools
             }
             catch(Exception ex){
                 log.Error(ex);
-                Console.WriteLine($"Error{ex}");
+                System.Console.WriteLine($"Error{ex}");
                 return result;
             }
         }
@@ -45,7 +45,7 @@ namespace Src.Tools
                     }
                     catch(Exception ex){
                         log.Error(ex);
-                        Console.WriteLine($"{ex}");
+                        System.Console.WriteLine($"{ex}");
                         return instance;
                     }
                 }

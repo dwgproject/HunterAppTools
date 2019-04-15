@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace HuntingAppSupport.Infrastructure{
+namespace Gravityzero.Console.Utility.Infrastructure{
 
     public interface IDirectory{
         string Name { get; }

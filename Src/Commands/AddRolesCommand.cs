@@ -1,16 +1,11 @@
-using System;
 using System.Collections.Generic;
-using System.Net.Http;
-using System.Text;
 using CommandLine;
-using HuntingAppSupport;
-using HuntingAppSupport.Commands;
-using HuntingAppSupport.Infrastructure;
-using Newtonsoft.Json;
-using Src.Model;
-using Src.Tools;
+using Gravityzero.Console.Utility.Context;
+using Gravityzero.Console.Utility.Infrastructure;
+using Gravityzero.Console.Utility.Model;
+using Gravityzero.Console.Utility.Tools;
 
-namespace Src.Commands
+namespace Gravityzero.Console.Utility.Commands
 {
     public class AddRolesCommand : BaseCommand<RolesArguments>
     {
@@ -18,15 +13,15 @@ namespace Src.Commands
         {
         }
 
-        protected override CommandResult Execute(ContextApplication context, RolesArguments arguments)
+        protected override CommandResult Execute(ConsoleContext context, RolesArguments arguments)
         {
-            Console.WriteLine($"Dodaje role dla userów z pliku: {arguments.Path}");
+            System.Console.WriteLine($"Dodaje role dla userów z pliku: {arguments.Path}");
             var file = new CsvReader<Role>();
             if(arguments.Path!=null){
                 var listRoles = file.LoadFile(arguments.Path); 
             }
             else{
-                Console.WriteLine($"Ścieżka nieprawidłowa -{arguments.Path}");
+                System.Console.WriteLine($"Ścieżka nieprawidłowa -{arguments.Path}");
             }
                       
             return new CommandResult();

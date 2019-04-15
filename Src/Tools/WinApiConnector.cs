@@ -4,7 +4,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 
-namespace Src.Tools
+namespace Gravityzero.Console.Utility.Tools
 {
     public static class WinApiConnector
     {

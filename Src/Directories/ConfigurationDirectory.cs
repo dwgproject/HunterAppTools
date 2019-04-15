@@ -1,11 +1,11 @@
 using System;
 using System.Collections.Generic;
-using HuntingAppSupport.Commands;
-using HuntingAppSupport.Infrastructure;
+using Gravityzero.Console.Utility.Commands;
+using Gravityzero.Console.Utility.Context;
+using Gravityzero.Console.Utility.Infrastructure;
 
-namespace HuntingAppSupport.Directories
+namespace Gravityzero.Console.Utility.Directories
 {
-
     public class ConfigurationDirectory : IDirectory, ICommand
     {
         public ConfigurationDirectory()
@@ -21,7 +21,7 @@ namespace HuntingAppSupport.Directories
 
         public string Description { get; private set;} = "Udostępnia komendy konfigurujące system.";
 
-        public CommandResult Execute(ContextApplication context)
+        public CommandResult Execute(ConsoleContext context)
         {
             context.PushDirectory(this);
             return new CommandResult();
