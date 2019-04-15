@@ -3,6 +3,15 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp2.2</TargetFramework>
+    <AssemblyName>hsutility</AssemblyName>
+    <Version>0.5.0</Version>
+    <AssemblyVersion>0.5.0</AssemblyVersion>
+    <FileVersion>0.5.0</FileVersion>
+    <Company>GravityZero</Company>
+    <Authors>Garion,Api</Authors>
+    <Product>Hunting Service Utility</Product>
+    <Description />
+    <Copyright>Copyright © 2019</Copyright>
   </PropertyGroup>
 
   <ItemGroup>

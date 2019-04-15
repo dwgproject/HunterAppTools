@@ -1,6 +1,8 @@
-using HuntingAppSupport.Infrastructure;
+using Gravityzero.Console.Utility.Context;
+using Gravityzero.Console.Utility.Infrastructure;
 
-namespace HuntingAppSupport.Commands{
+namespace Gravityzero.Console.Utility.Commands
+{
     public class ExitCommand : ICommand
     {
         public ExitCommand()
@@ -10,7 +12,7 @@ namespace HuntingAppSupport.Commands{
 
         public string Description { get ; set; } = "Komenda zamyka aplikację.";
 
-        public CommandResult Execute(ContextApplication context)
+        public CommandResult Execute(ConsoleContext context)
         {
             context.ShouldWork = false;
             return new CommandResult();

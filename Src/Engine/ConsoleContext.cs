@@ -1,18 +1,18 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using HuntingAppSupport.Commands;
-using HuntingAppSupport.Directories;
-using HuntingAppSupport.Infrastructure;
-using Src.Tools;
+using Gravityzero.Console.Utility.Commands;
+using Gravityzero.Console.Utility.Directories;
+using Gravityzero.Console.Utility.Infrastructure;
 
-namespace HuntingAppSupport{
-    public class ContextApplication : IDisposable{
+namespace Gravityzero.Console.Utility.Context
+{
+    public class ConsoleContext : IDisposable{
         public Stack<IDirectory> directoryStack;
         private IDictionary<string, Type> generalCommands = new Dictionary<string, Type>();
         public bool ShouldWork { get; set; } = true;
 
-        public ContextApplication()
+        public ConsoleContext()
         {
             directoryStack = new Stack<IDirectory>();
             generalCommands.Add("exit", typeof(ExitCommand));
@@ -39,7 +39,7 @@ namespace HuntingAppSupport{
                 builder.Append(item.Name);
             }
         
-            return string.Concat(builder.ToString(), "()-> ");
+            return string.Concat(builder.ToString(), ">>> ");
         }
 
         public ICommand GetCommandIfExist(string name, IList<string> args){
@@ -59,7 +59,7 @@ namespace HuntingAppSupport{
                 if (type != null)
                     return args.Count == 0 ? (ICommand)Activator.CreateInstance(type) : (ICommand)Activator.CreateInstance(type, args);
             }catch(Exception ex){
-                Console.WriteLine(ex.Message);
+                System.Console.WriteLine(ex.Message);
                 return new DummyCommand();
             }
             return new DummyCommand();

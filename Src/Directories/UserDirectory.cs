@@ -1,9 +1,11 @@
 using System;
 using System.Collections.Generic;
-using HuntingAppSupport.Commands;
-using HuntingAppSupport.Infrastructure;
+using Gravityzero.Console.Utility.Commands;
+using Gravityzero.Console.Utility.Context;
+using Gravityzero.Console.Utility.Infrastructure;
 
-namespace HuntingAppSupport.Directories{
+namespace Gravityzero.Console.Utility.Directories
+{
 
     public class UserDirectory : IDirectory, ICommand
     {
@@ -22,7 +24,7 @@ namespace HuntingAppSupport.Directories{
             Directories = new Dictionary<string, IDirectory>();
         }
 
-        public CommandResult Execute(ContextApplication context)
+        public CommandResult Execute(ConsoleContext context)
         {
             context.PushDirectory(this);
             return new CommandResult();

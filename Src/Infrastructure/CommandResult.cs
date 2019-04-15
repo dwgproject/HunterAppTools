@@ -1,5 +1,5 @@
-namespace HuntingAppSupport.Infrastructure{
-
+namespace Gravityzero.Console.Utility.Infrastructure
+{
     public class CommandResult{
         public CommandResult()
         {

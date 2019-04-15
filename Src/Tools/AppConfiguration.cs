@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using Newtonsoft.Json;
 
-namespace Src.Tools
+namespace Gravityzero.Console.Utility.Tools
 {
     public class AppConfiguration
     {
@@ -19,8 +19,9 @@ namespace Src.Tools
             if(!configuration.ContainsKey(key)){
                 configuration.Add(key, value);
             }
-            else{
-                Console.WriteLine($"Key -{key}- already exist");
+            else
+            {
+                System.Console.WriteLine($"Key -{key}- already exist");
             }
 
         }
@@ -31,7 +32,7 @@ namespace Src.Tools
                 configuration.Remove(key);
             }
             else{
-                Console.WriteLine($"Key -{key}- doesn't exist");    
+                System.Console.WriteLine($"Key -{key}- doesn't exist");    
             }
         }
 
@@ -42,7 +43,7 @@ namespace Src.Tools
                 File.WriteAllText(path, newConfiguration);
             }
             catch(Exception ex){
-                Console.WriteLine($"Can't write configuration - {ex}");
+                System.Console.WriteLine($"Can't write configuration - {ex}");
             }
         }
 
@@ -56,12 +57,12 @@ namespace Src.Tools
                     return result;
                 }
                 catch(Exception ex){
-                    Console.WriteLine($"{ex}");
+                    System.Console.WriteLine($"{ex}");
                     return result;
                 }
             }
             else{
-                Console.WriteLine($"File doesn't exist");
+                System.Console.WriteLine($"File doesn't exist");
                 return result;
             }
             

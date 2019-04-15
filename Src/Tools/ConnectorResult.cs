@@ -1,4 +1,4 @@
-namespace Src.Tools{
+namespace Gravityzero.Console.Utility.Tools{
 
     public class ConnectorResult<TResult>  where TResult : new()
     {
