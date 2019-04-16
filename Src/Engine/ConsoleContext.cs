@@ -8,7 +8,7 @@ using Gravityzero.Console.Utility.Infrastructure;
 namespace Gravityzero.Console.Utility.Context
 {
     public class ConsoleContext : IDisposable{
-        public Stack<IDirectory> directoryStack;
+        private Stack<IDirectory> directoryStack;
         private IDictionary<string, Type> generalCommands = new Dictionary<string, Type>();
         public bool ShouldWork { get; set; } = true;
 
@@ -17,9 +17,15 @@ namespace Gravityzero.Console.Utility.Context
             directoryStack = new Stack<IDirectory>();
             generalCommands.Add("exit", typeof(ExitCommand));
             generalCommands.Add("help", typeof(HelpCommand));
-            generalCommands.Add("user", typeof(UserDirectory));
             generalCommands.Add("up", typeof(BackCommand));
-            generalCommands.Add("configuration", typeof(ConfigurationDirectory));
+            generalCommands.Add("list", typeof(ListCommand));
+            generalCommands.Add("credits", typeof(CreditsCommand));
+            PushDirectory(new RootDirectory());
+        }
+
+        public IEnumerable<string> GetGeneralCommands()
+        {
+            return generalCommands.Keys;
         }
 
         public void PushDirectory(IDirectory directory){
@@ -27,7 +33,15 @@ namespace Gravityzero.Console.Utility.Context
         }
 
         public void PopDirectory(){
-            directoryStack.Pop();
+            if (directoryStack.Count > 1)
+                directoryStack.Pop();
+        }
+
+        public IDirectory GetDirectory()
+        {
+            if (directoryStack.Count > 0)
+                return directoryStack.Peek();
+            return new DummyDirectory();//chyba niepotrzebne
         }
 
         public string GetPath(){
@@ -44,21 +58,23 @@ namespace Gravityzero.Console.Utility.Context
 
         public ICommand GetCommandIfExist(string name, IList<string> args){
             Type type = null;
-            if (generalCommands.ContainsKey(name)){
+            IDirectory current = null;
+            if (directoryStack.TryPeek(out current) && current.Commands.ContainsKey(name)) 
+            {
+                type = current.Commands[name];
+            }
+            else if (generalCommands.ContainsKey(name))
+            {
                 type = generalCommands[name];
             }
-            else
-            {
-                IDirectory current = null;
-                if (directoryStack.TryPeek(out current) && current.Commands.ContainsKey(name)){
-                    type = current.Commands[name];
-                }
-            }
 
-            try{
+            try
+            {
                 if (type != null)
                     return args.Count == 0 ? (ICommand)Activator.CreateInstance(type) : (ICommand)Activator.CreateInstance(type, args);
-            }catch(Exception ex){
+            }
+            catch(Exception ex)
+            {
                 System.Console.WriteLine(ex.Message);
                 return new DummyCommand();
             }
