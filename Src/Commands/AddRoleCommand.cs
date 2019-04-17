@@ -26,6 +26,9 @@ namespace Gravityzero.Console.Utility.Commands
     {
         [Option('n', "name", Required = true, HelpText = "Nazwa roli.")]
         public string Name { get; set; }
+
+        [Option('r', "rename", Required = false, HelpText = "Nowa nazwa dla roli.")]
+        public string Rename { get; set; }
     }
     
     public class Result{
