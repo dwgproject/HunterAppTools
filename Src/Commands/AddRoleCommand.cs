@@ -19,6 +19,8 @@ namespace Gravityzero.Console.Utility.Commands
             Role role = new Role(){ Name = arguments.Name};
             var result = WinApiConnector.RequestPost<Role, Result>("http://localhost:5000/Api/Configuration/AddRole", role);
             return new CommandResult(result.Result.IsSuccess ? "OK." : result.Result.Message);
+
+            
         }
     }
 

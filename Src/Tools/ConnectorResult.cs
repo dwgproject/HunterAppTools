@@ -27,5 +27,11 @@ namespace Gravityzero.Console.Utility.Tools{
             IsSuccess = false;
             Result = new TResult();
         }
+
+
+
+
+
+        
     }
 }
