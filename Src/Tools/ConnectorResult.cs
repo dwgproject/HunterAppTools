@@ -16,7 +16,6 @@ namespace Gravityzero.Console.Utility.Tools{
         {
             Init();
             Message = message;
-
         }
         public ConnectorResult()
         {
@@ -26,6 +25,6 @@ namespace Gravityzero.Console.Utility.Tools{
         private void Init(){
             IsSuccess = false;
             Result = new TResult();
-        }
+        }        
     }
 }

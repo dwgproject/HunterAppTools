@@ -11,13 +11,14 @@
 using System;
 using System.Reflection;
 
-[assembly: System.Reflection.AssemblyCompanyAttribute("HuntingAppSupport")]
+[assembly: System.Reflection.AssemblyCompanyAttribute("GravityZero")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
-[assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
-[assembly: System.Reflection.AssemblyProductAttribute("HuntingAppSupport")]
-[assembly: System.Reflection.AssemblyTitleAttribute("HuntingAppSupport")]
-[assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
+[assembly: System.Reflection.AssemblyCopyrightAttribute("Copyright © 2019")]
+[assembly: System.Reflection.AssemblyFileVersionAttribute("0.5.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("0.5.0")]
+[assembly: System.Reflection.AssemblyProductAttribute("Hunting Service Utility")]
+[assembly: System.Reflection.AssemblyTitleAttribute("hsutility")]
+[assembly: System.Reflection.AssemblyVersionAttribute("0.5.0")]
 
 // Wygenerowane przez klasę WriteCodeFragment programu MSBuild.
 

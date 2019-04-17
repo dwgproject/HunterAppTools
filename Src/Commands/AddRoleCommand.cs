@@ -7,7 +7,6 @@ using Gravityzero.Console.Utility.Tools;
 
 namespace Gravityzero.Console.Utility.Commands
 {
-
     public class AddRoleCommand : BaseCommand<RoleArgument>
     {
         public AddRoleCommand(IList<string> args) : base(args)
@@ -18,7 +17,7 @@ namespace Gravityzero.Console.Utility.Commands
         {
             Role role = new Role(){ Name = arguments.Name};
             var result = WinApiConnector.RequestPost<Role, Result>("http://localhost:5000/Api/Configuration/AddRole", role);
-            return new CommandResult(result.Result.IsSuccess ? "OK." : result.Result.Message);
+            return new CommandResult(result.Result.IsSuccess ? "OK." : result.Result.Message);            
         }
     }
 

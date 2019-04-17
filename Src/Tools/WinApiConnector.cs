@@ -18,7 +18,9 @@ namespace Gravityzero.Console.Utility.Tools
             {
                 var response = await client.PostAsync(path, content);
                 if (response.IsSuccessStatusCode){
-                    return new ConnectorResult<TResult>();
+                    var serverResponse = await response.Content.ReadAsStringAsync();
+                    var result = JsonConvert.DeserializeObject<TResult>(serverResponse);
+                    return new ConnectorResult<TResult>(result);
                 }else{
                     return new ConnectorResult<TResult>($"Occurred code: {response.StatusCode.ToString()}");
                 }
