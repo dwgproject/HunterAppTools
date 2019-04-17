@@ -11,6 +11,9 @@ namespace Gravityzero.Console.Utility.Directories
         public ConfigurationDirectory()
         {
             Commands.Add("addrole", typeof(AddRoleCommand));
+            Commands.Add("addroles", typeof(AddRolesCommand));
+            Commands.Add("getroles",typeof(GetRolesCommand));
+            Commands.Add("deleterole", typeof(DeleteRoleCommand));
         }
 
         public string Name { get; private set;} = "Configuration";
