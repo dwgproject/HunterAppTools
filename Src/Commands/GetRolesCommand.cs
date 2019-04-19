@@ -21,10 +21,9 @@ namespace Gravityzero.Console.Utility.Commands
                 foreach(var role in result.Result.Result.Payload){
                     System.Console.WriteLine($"{role.Name} -- ({role.Identifier})".PadLeft(70));
                     listRoles.Add(new Role(){Identifier=role.Identifier, Name = role.Name});
-                }
-                return new CommandResult(result.Result.IsSuccess ? "Ok" : result.Result.Message);
-            }           
-            return new CommandResult();
+                }                
+            }   
+            return new CommandResult(result.Result.IsSuccess ? "Ok" : result.Result.Message);        
         }
     }
 
