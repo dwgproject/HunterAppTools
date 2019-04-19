@@ -24,12 +24,12 @@ namespace Gravityzero.Console.Utility.Commands
                 System.Console.WriteLine("Przy update wymagany parametr -r <NAZWA>");
                 return new CommandResult();
             }
-            var role = WinApiConnector.RequestPost<string, Response<IEnumerable<Role>>>("https://localhost:44377/Role/GetRole",arguments.Name);
+            var role = WinApiConnector.RequestPost<string, Response<IEnumerable<Role>>>("http://localhost:5000/Api/Configuration/",arguments.Name);
             if(!role.Result.Result.IsSuccess){
                 return new CommandResult(role.Result.Message);
             }
             var changeRole = new Role(){Identifier=role.Result.Result.Payload.FirstOrDefault().Identifier, Name = arguments.Rename};
-            var result = WinApiConnector.RequestPost<Role,Response<Role>>("https://localhost:44377/Role/UpdateRole",changeRole);
+            var result = WinApiConnector.RequestPost<Role,Response<Role>>("http://localhost:5000/Api/Configuration/",changeRole);
             return new CommandResult(result.Result.IsSuccess ? "OK" : result.Result.Message);
         }
     }
