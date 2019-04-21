@@ -21,6 +21,7 @@ namespace Gravityzero.Console.Utility.Directories
         {
             Commands = new Dictionary<string, Type>();
             Commands.Add("add", typeof(AddUserCommand));
+            Commands.Add("delete", typeof(DeleteUserCommand));
             Directories = new Dictionary<string, IDirectory>();
         }
 

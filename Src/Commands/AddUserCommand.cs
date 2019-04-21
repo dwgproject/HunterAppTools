@@ -9,6 +9,8 @@ using System.Linq;
 
 namespace Gravityzero.Console.Utility.Commands
 {
+    //testPath https://localhost:44377/User/SignUp
+    //realPAth http://localhost:5000/Api/Configuration/GetAllRoles
     public class AddUserCommand : BaseCommand<UserArguments>
     {
         private readonly ILog logger = LogManager.GetLogger(typeof(AddUserCommand));
@@ -60,11 +62,6 @@ namespace Gravityzero.Console.Utility.Commands
 
         [Option('e', "email", Required = true, HelpText = "Email użytkownika.")]
         public string Email {get; set;}      
-    }
-
-    public class User
-    {
-
     }
 
 }
