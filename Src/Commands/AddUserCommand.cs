@@ -22,7 +22,7 @@ namespace Gravityzero.Console.Utility.Commands
 
         protected override CommandResult Execute(ConsoleContext context, UserArguments arguments)
         {
-            var roles = WinApiConnector.RequestGet<string,Response<IEnumerable<Role>>>("https://localhost:44377/Role/GetRoles","");
+            var roles = WinApiConnector.RequestGet<string,Response<IEnumerable<Role>>>("http://localhost:5000/Api/Configuration/GetAllRoles","");
 
             System.Console.WriteLine("Wybierz role dla nowego użytkownika");
             int index =0;
@@ -37,10 +37,10 @@ namespace Gravityzero.Console.Utility.Commands
                 int.TryParse(choice, out value);
             }
             var role = new Role(){Identifier=roles.Result.Result.Payload.Select(i=>i.Identifier).ElementAt(value-1)};
-            var result = WinApiConnector.RequestPost<Model.User, Response<User>>("https://localhost:44377/User/SignUp",new Model.User(){Login = arguments.Login, Name = arguments.Name,
+            var result = WinApiConnector.RequestPost<Model.User, Response<User>>("http://localhost:5000/Api/User/SignUp",new Model.User(){Login = arguments.Login, Name = arguments.Name,
                         Password = arguments.Password, Surname = arguments.Surname, Role = role, Email = arguments.Email});
             System.Console.WriteLine($"Dodaje usera. Oto jego dane: {arguments.Name} {arguments.Surname}");
-            return new CommandResult();
+            return new CommandResult(result.Result.IsSuccess ? "OK" : result.Result.Message);
         }
     }
 
@@ -58,8 +58,6 @@ namespace Gravityzero.Console.Utility.Commands
         [Option('p', "password", Required = true, HelpText = "Hasło użytkownika.")]
         public string Password {get; set;}
 
-        [Option('r', "role", Required = false, HelpText = "Rola użytkownika.")]
-        public string Role {get; set;} 
         [Option('e', "email", Required = true, HelpText = "Email użytkownika.")]
         public string Email {get; set;}      
     }
