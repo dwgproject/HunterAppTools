@@ -17,14 +17,13 @@ namespace Gravityzero.Console.Utility.Commands
         public CommandResult Execute(ConsoleContext context)
         {
             System.Console.WriteLine("Procedura usunięcia użytkownika. Postępuj zgdnie z instrukcją");
-            System.Console.WriteLine("Login użytkownika: ");
+            System.Console.Write("Login użytkownika: ");
             var login = System.Console.ReadLine();
-            System.Console.WriteLine("Email użytkownika: ");
-            var email = System.Console.ReadLine();
-            System.Console.WriteLine("Hasło użytkownika: ");
+
+            System.Console.Write("Hasło użytkownika: ");
             var password = System.Console.ReadLine();
             var findUser = WinApiConnector.RequestPost<User,Response<IEnumerable<User>>>("http://localhost:5000/Api/User/GetUser",
-                            new User(){Login = login, Email = email, Password = password});
+                            new User(){Login = login, Password = password});
             if(!findUser.Result.IsSuccess){
                 return new CommandResult();
             }

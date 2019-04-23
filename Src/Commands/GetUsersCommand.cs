@@ -12,7 +12,7 @@ namespace Gravityzero.Console.Utility.Commands
 
         public CommandResult Execute(ConsoleContext context)
         {
-            var result = WinApiConnector.RequestGet<string,Response<IEnumerable<User>>>("https://localhost:44377/User/GetUsers","");
+            var result = WinApiConnector.RequestGet<string,Response<IEnumerable<User>>>("http://localhost:5000/Api/User/GetUser","");
             foreach(var user in result.Result.Result.Payload){
                 System.Console.WriteLine($"{user.Login} - {user.Role.Name}");
             }
