@@ -15,6 +15,8 @@ namespace Gravityzero.Console.Utility.Directories
             Commands.Add("getroles",typeof(GetRolesCommand));
             Commands.Add("deleterole", typeof(DeleteRoleCommand));
             Commands.Add("updaterole", typeof(UpdateRoleCommand));
+            Commands.Add("addanimal", typeof(AddAnimalCommand));
+            Commands.Add("getanimals", typeof(GetAnimalsCommand));
         }
 
         public string Name { get; private set;} = "Configuration";
