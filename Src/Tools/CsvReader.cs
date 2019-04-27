@@ -38,10 +38,17 @@ namespace Gravityzero.Console.Utility.Tools
             var properties = instance.GetType().GetProperties();
             int i = 0;
             foreach(var property in properties){
-                if(property.PropertyType!=typeof(Guid)){
+                if(property.PropertyType!=typeof(Guid) && !string.IsNullOrEmpty(values[i])){
                     try{
-                        property.SetValue(instance, Convert.ChangeType(values[i],property.PropertyType));
-                        return instance;
+                        if(property.PropertyType.IsClass && !property.PropertyType.FullName.StartsWith("System.")){
+                            Type type = Type.GetType(property.PropertyType.FullName,true);
+                            var x = Activator.CreateInstance(type);
+                            x.GetType().GetProperty("Identifier").SetValue(x,Guid.Parse(values[i]));
+                            property.SetValue(instance,x);
+                        }
+                        else{
+                            property.SetValue(instance, Convert.ChangeType(values[i],property.PropertyType));
+                        }
                     }
                     catch(Exception ex){
                         log.Error(ex);
