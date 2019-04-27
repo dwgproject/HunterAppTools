@@ -28,8 +28,8 @@ namespace Gravityzero.Console.Utility.Commands
             if(!role.Result.Result.IsSuccess){
                 return new CommandResult(role.Result.Message);
             }
-            var changeRole = new Role(){Identifier=role.Result.Result.Payload.FirstOrDefault().Identifier, Name = arguments.Rename};
-            var result = WinApiConnector.RequestPost<Role,Response<Role>>("http://localhost:5000/Api/Configuration/",changeRole);
+            var result = WinApiConnector.RequestPost<Role,Response<Role>>("http://localhost:5000/Api/Configuration/",
+                        new Role(){Identifier=role.Result.Result.Payload.FirstOrDefault().Identifier, Name = arguments.Rename});
             return new CommandResult(result.Result.IsSuccess ? "OK" : result.Result.Message);
         }
     }

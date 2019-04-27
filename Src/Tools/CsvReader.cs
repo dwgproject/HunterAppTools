@@ -18,7 +18,7 @@ namespace Gravityzero.Console.Utility.Tools
 
         public List<TData> LoadFile(string path)
         {
-            var result = Activator.CreateInstance<List<TData>>();
+            var result = Activator.CreateInstance<List<TData>>();           
             try{
                 var readFile = File.ReadAllLines(path);
                 result = readFile.Skip(1).Select(d=>Load(d)).ToList();

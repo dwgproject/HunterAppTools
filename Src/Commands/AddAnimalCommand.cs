@@ -24,5 +24,7 @@ namespace Gravityzero.Console.Utility.Commands
     {
         [Option('n',"name", Required=true, HelpText="Nazwa zwierzęcia")]
         public string Name { get; set; }
+        [Option('r',"rename", Required=false, HelpText="Zmiana nazwys zwierzęcia")]
+        public string Rename { get; set; }
     }
 }
