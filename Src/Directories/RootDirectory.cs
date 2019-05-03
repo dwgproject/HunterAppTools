@@ -12,6 +12,7 @@ namespace Gravityzero.Console.Utility.Directories
             Directories = new Dictionary<string, IDirectory>();
             Commands.Add("configuration", typeof(ConfigurationDirectory));
             Commands.Add("user", typeof(UserDirectory));
+            Commands.Add("hunting", typeof(HuntingDirectory));
         }
         public string Name => string.Empty;
         public IDictionary<string, Type> Commands { get; set;}

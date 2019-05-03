@@ -36,8 +36,7 @@ namespace Gravityzero.Console.Utility.Commands
                 }
                 else{
                     log.Error($"{result.Result.Message}");  
-                }
-                                 
+                }                                
             }
             System.Console.WriteLine($"Dodano obiektów: {successIndex}");
             return new CommandResult(successIndex==listRoles.Count ? "Ok": "Error. Check log file!");           

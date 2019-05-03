@@ -2,10 +2,15 @@ using System.Collections.Generic;
 using CommandLine;
 using Gravityzero.Console.Utility.Context;
 using Gravityzero.Console.Utility.Infrastructure;
+using Gravityzero.Console.Utility.Tools;
+using Gravityzero.Console.Utility.Model;
 using log4net;
+using System.Linq;
 
 namespace Gravityzero.Console.Utility.Commands
 {
+    //testPath https://localhost:44377/User/SignUp
+    //realPAth http://localhost:5000/Api/Configuration/GetAllRoles
     public class AddUserCommand : BaseCommand<UserArguments>
     {
         private readonly ILog logger = LogManager.GetLogger(typeof(AddUserCommand));
@@ -19,13 +24,25 @@ namespace Gravityzero.Console.Utility.Commands
 
         protected override CommandResult Execute(ConsoleContext context, UserArguments arguments)
         {
-            //Task<ConnectorResult<User>> result = WinApiConnector.RequestPost<User, User>(new User());
-            
+            var roles = WinApiConnector.RequestGet<string,Response<IEnumerable<Role>>>("http://localhost:5000/Api/Configuration/GetAllRoles","");
 
-            
-
+            System.Console.WriteLine("Wybierz role dla nowego użytkownika");
+            int index =0;
+            foreach(var r in roles.Result.Result.Payload){
+                System.Console.WriteLine($"{index+1}. {r.Name}");
+                index++;
+            }
+            string choice = "";
+            int value=0;
+            while(choice=="" || value==0){
+                choice = System.Console.ReadLine();
+                int.TryParse(choice, out value);
+            }
+            var role = new Role(){Identifier=roles.Result.Result.Payload.Select(i=>i.Identifier).ElementAt(value-1)};
+            var result = WinApiConnector.RequestPost<Model.User, Response<User>>("http://localhost:5000/Api/User/SignUp",new Model.User(){Login = arguments.Login, Name = arguments.Name,
+                        Password = arguments.Password, Surname = arguments.Surname, Role = role, Email = arguments.Email});
             System.Console.WriteLine($"Dodaje usera. Oto jego dane: {arguments.Name} {arguments.Surname}");
-            return new CommandResult();
+            return new CommandResult(result.Result.IsSuccess ? "OK" : result.Result.Message);
         }
     }
 
@@ -36,11 +53,15 @@ namespace Gravityzero.Console.Utility.Commands
 
         [Option('s', "surname", Required = true, HelpText = "Nazwisko użytkownika.")]
         public string Surname {get; set;}
-    }
 
-    public class User
-    {
+        [Option('l', "login", Required = true, HelpText = "Login użytkownika.")]
+        public string Login {get; set;}
 
+        [Option('p', "password", Required = true, HelpText = "Hasło użytkownika.")]
+        public string Password {get; set;}
+
+        [Option('e', "email", Required = true, HelpText = "Email użytkownika.")]
+        public string Email {get; set;}      
     }
 
 }
