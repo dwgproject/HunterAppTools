@@ -8,7 +8,7 @@ namespace Gravityzero.Console.Utility.Commands
     public class GetAppSettingsCommand : ICommand
     {
         public string Description => throw new System.NotImplementedException();
-
+        
         public CommandResult Execute(ConsoleContext context)
         {
             IDictionary<string, object> settings = new Dictionary<string, object>();

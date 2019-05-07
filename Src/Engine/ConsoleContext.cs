@@ -11,8 +11,8 @@ namespace Gravityzero.Console.Utility.Context
     public class ConsoleContext : IDisposable{
         private Stack<IDirectory> directoryStack;
         private IDictionary<string, Type> generalCommands = new Dictionary<string, Type>();
-        public IDictionary<string, object> Settings { get; set;}
         public bool ShouldWork { get; set; } = true;
+        public ConsoleSettings ConsoleSettings { get; set; }
 
         public ConsoleContext()
         {
@@ -23,7 +23,9 @@ namespace Gravityzero.Console.Utility.Context
             generalCommands.Add("list", typeof(ListCommand));
             generalCommands.Add("credits", typeof(CreditsCommand));
             PushDirectory(new RootDirectory());
-            Settings = GetSettings();
+                       
+            ConsoleSettings settings = new ConsoleSettings();
+            ConsoleSettings = settings;
         }
 
         public IEnumerable<string> GetGeneralCommands()
@@ -82,14 +84,6 @@ namespace Gravityzero.Console.Utility.Context
                 return new DummyCommand();
             }
             return new DummyCommand();
-        }
-
-        public IDictionary<string, object> GetSettings()
-        {
-            IDictionary<string, object> appSettings = new Dictionary<string, object>();
-            var configuration = new AppConfiguration(appSettings);
-            appSettings = configuration.LoadConfiguration(PathProvider.SettingsPath());
-            return appSettings;
         }
 
         public void Dispose()

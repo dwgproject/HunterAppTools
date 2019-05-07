@@ -15,19 +15,18 @@ namespace Gravityzero.Console.Utility.Commands
 
         protected override CommandResult Execute(ConsoleContext context, SettingsArguments arguments)
         {
-            IDictionary<string,object> settings = new Dictionary<string,object>();
-            settings.Add("address",arguments.Server);
-            settings.Add("port", arguments.Port);
-            var configuration = new AppConfiguration(settings);
-            configuration.UpdateConfiguration(settings);
+            ConsoleSettings consoleSettings = new ConsoleSettings();
+            consoleSettings.ServerAddress = arguments.Address;
+            consoleSettings.Port = arguments.Port;
+            consoleSettings.Save();
             return new CommandResult("OK");
         }
     }
 
     public class SettingsArguments
     {
-        [Option('s',"server", Required = true, HelpText = "Adres serwera")]
-        public string Server { get; set; }
+        [Option('a',"address", Required = true, HelpText = "Adres serwera")]
+        public string Address { get; set; }
 
         [Option('p',"port", Required = true, HelpText = "Port")]
         public string Port { get; set; }

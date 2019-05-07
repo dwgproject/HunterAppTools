@@ -17,7 +17,7 @@ namespace Gravityzero.Console.Utility.Commands
 
         protected override CommandResult Execute(ConsoleContext context, AnimalArguments arguments)
         {
-            var result = WinApiConnector.RequestPost<Animal, Response<Animal>>($"{context.Settings["address"]}:{context.Settings["port"]}/Api/Animal/Add",new Animal(){Name = arguments.Name});
+            var result = WinApiConnector.RequestPost<Animal, Response<Animal>>($"{context.ConsoleSettings.ServerAddress}:{context.ConsoleSettings.Port}/Api/Animal/Add",new Animal(){Name = arguments.Name});
             return new CommandResult(result.Result.IsSuccess ? "OK" : result.Result.Message);
         }
     }

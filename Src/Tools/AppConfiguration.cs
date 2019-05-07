@@ -66,13 +66,5 @@ namespace Gravityzero.Console.Utility.Tools
                 return result;
             }           
         }
-
-        public void UpdateConfiguration(IDictionary<string, object> dictionary)
-        {
-            configuration = LoadConfiguration(PathProvider.SettingsPath());
-            configuration["address"] = dictionary["address"];
-            configuration["port"] = dictionary["port"];
-            SaveConfiguration(PathProvider.SettingsPath());
-        }
     }
 }
