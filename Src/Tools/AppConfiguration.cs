@@ -64,8 +64,15 @@ namespace Gravityzero.Console.Utility.Tools
             else{
                 System.Console.WriteLine($"File doesn't exist");
                 return result;
-            }
-            
+            }           
+        }
+
+        public void UpdateConfiguration(IDictionary<string, object> dictionary)
+        {
+            configuration = LoadConfiguration(PathProvider.SettingsPath());
+            configuration["address"] = dictionary["address"];
+            configuration["port"] = dictionary["port"];
+            SaveConfiguration(PathProvider.SettingsPath());
         }
     }
 }
