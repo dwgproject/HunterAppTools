@@ -4,6 +4,7 @@ using System.Text;
 using Gravityzero.Console.Utility.Commands;
 using Gravityzero.Console.Utility.Directories;
 using Gravityzero.Console.Utility.Infrastructure;
+using Gravityzero.Console.Utility.Tools;
 
 namespace Gravityzero.Console.Utility.Context
 {
@@ -11,6 +12,7 @@ namespace Gravityzero.Console.Utility.Context
         private Stack<IDirectory> directoryStack;
         private IDictionary<string, Type> generalCommands = new Dictionary<string, Type>();
         public bool ShouldWork { get; set; } = true;
+        public ConsoleSettings ConsoleSettings { get; set; }
 
         public ConsoleContext()
         {
@@ -21,6 +23,9 @@ namespace Gravityzero.Console.Utility.Context
             generalCommands.Add("list", typeof(ListCommand));
             generalCommands.Add("credits", typeof(CreditsCommand));
             PushDirectory(new RootDirectory());
+                       
+            ConsoleSettings settings = new ConsoleSettings();
+            ConsoleSettings = settings;
         }
 
         public IEnumerable<string> GetGeneralCommands()

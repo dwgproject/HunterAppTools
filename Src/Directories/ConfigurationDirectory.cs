@@ -18,6 +18,8 @@ namespace Gravityzero.Console.Utility.Directories
             Commands.Add("addanimal", typeof(AddAnimalCommand));
             Commands.Add("getanimals", typeof(GetAnimalsCommand));
             Commands.Add("updateanimal", typeof(UpdateAnimalCommand));
+            Commands.Add("updatesettings", typeof(ChangeAppSettingsCommand));
+            Commands.Add("showsettings", typeof(ShowSettingsCommand));
         }
 
         public string Name { get; private set;} = "Configuration";

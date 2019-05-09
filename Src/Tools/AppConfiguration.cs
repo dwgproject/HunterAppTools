@@ -64,8 +64,7 @@ namespace Gravityzero.Console.Utility.Tools
             else{
                 System.Console.WriteLine($"File doesn't exist");
                 return result;
-            }
-            
+            }           
         }
     }
 }

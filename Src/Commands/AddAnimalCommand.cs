@@ -9,13 +9,15 @@ namespace Gravityzero.Console.Utility.Commands
 {
     public class AddAnimalCommand : BaseCommand<AnimalArguments>
     {
+
         public AddAnimalCommand(IList<string> args) : base(args)
         {
+
         }
 
         protected override CommandResult Execute(ConsoleContext context, AnimalArguments arguments)
         {
-            var result = WinApiConnector.RequestPost<Animal, Response<Animal>>("https://localhost:44377/Animal/Add",new Animal(){Name = arguments.Name});
+            var result = WinApiConnector.RequestPost<Animal, Response<Animal>>($"{context.ConsoleSettings.ServerAddress}:{context.ConsoleSettings.Port}/Api/Animal/Add",new Animal(){Name = arguments.Name});
             return new CommandResult(result.Result.IsSuccess ? "OK" : result.Result.Message);
         }
     }
