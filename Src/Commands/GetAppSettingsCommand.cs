@@ -5,9 +5,9 @@ using Gravityzero.Console.Utility.Tools;
 
 namespace Gravityzero.Console.Utility.Commands
 {
-    public class GetAppSettingsCommand : ICommand
+    public class ShowSettingsCommand : ICommand
     {
-        public string Description => throw new System.NotImplementedException();
+        public string Description => "Komenda zwracająca aktualne ustawienia aplikacji";
         
         public CommandResult Execute(ConsoleContext context)
         {

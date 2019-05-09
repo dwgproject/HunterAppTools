@@ -15,10 +15,9 @@ namespace Gravityzero.Console.Utility.Commands
 
         protected override CommandResult Execute(ConsoleContext context, SettingsArguments arguments)
         {
-            ConsoleSettings consoleSettings = new ConsoleSettings();
-            consoleSettings.ServerAddress = arguments.Address;
-            consoleSettings.Port = arguments.Port;
-            consoleSettings.Save();
+            context.ConsoleSettings.ServerAddress = arguments.Address;
+            context.ConsoleSettings.Port = arguments.Port;
+            context.ConsoleSettings.Save();
             return new CommandResult("OK");
         }
     }
