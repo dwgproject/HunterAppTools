@@ -15,7 +15,7 @@ namespace Gravityzero.Console.Utility.Commands
 
         public CommandResult Execute(ConsoleContext context)
         {
-            var result = WinApiConnector.RequestGet<string, Response<IEnumerable<Animal>>>("https://localhost:44377/Animal/Get","");
+            var result = WinApiConnector.RequestGet<string, Response<IEnumerable<Animal>>>($"{context.ConsoleSettings.ServerAddress}:{context.ConsoleSettings.Port}/Api/Animal/Get","");
             if(result.Result.Result.Payload.Count()>0){
                 int i = 1;
                 foreach(var animal in result.Result.Result.Payload){

@@ -45,7 +45,7 @@ namespace Gravityzero.Console.Utility.Commands
                 partialHuntings.Add(new PartialHunting());
             }
 
-            var result = WinApiConnector.RequestPost<Hunting, Response<Hunting>>("http://localhost:5000/Api/",
+            var result = WinApiConnector.RequestPost<Hunting, Response<Hunting>>($"{context.ConsoleSettings.ServerAddress}:{context.ConsoleSettings.Port}/Api/",
                         new Hunting(){Leader = leader, Users =users , Quarries = quarries, PartialHuntings = partialHuntings, });
 
             return new CommandResult(result.Result.IsSuccess ? "OK": result.Result.Message);

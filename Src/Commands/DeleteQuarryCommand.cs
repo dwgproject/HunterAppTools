@@ -14,7 +14,7 @@ namespace Gravityzero.Console.Utility.Commands
         protected override CommandResult Execute(ConsoleContext context, QuarryArguments arguments)
         {
             if(!string.IsNullOrEmpty(arguments.Identifier)){
-                var result = WinApiConnector.RequestDelete<string,Response<string>>("http://localhost:5000/Api/"+$"/{arguments.Identifier}");
+                var result = WinApiConnector.RequestDelete<string,Response<string>>($"{context.ConsoleSettings.ServerAddress}:{context.ConsoleSettings.Port}/Api/"+$"/{arguments.Identifier}");
                 return new CommandResult(result.Result.IsSuccess ? "OK" : result.Result.Message);
             }
             // TODO

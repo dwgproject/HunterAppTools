@@ -16,7 +16,7 @@ namespace Gravityzero.Console.Utility.Commands
 
         protected override CommandResult Execute(ConsoleContext context, QuarryArguments arguments)
         {
-            var animals = WinApiConnector.RequestGet<string,Response<IEnumerable<Animal>>>("http://localhost:5000/Api/","");
+            var animals = WinApiConnector.RequestGet<string,Response<IEnumerable<Animal>>>($"{context.ConsoleSettings.ServerAddress}:{context.ConsoleSettings.Port}/Api","");
             Animal tmpAnimal = new Animal();
             if(string.IsNullOrEmpty(arguments.Animal)){             
                 foreach(var item in animals.Result.Result.Payload){
@@ -31,7 +31,7 @@ namespace Gravityzero.Console.Utility.Commands
                 tmpAnimal = animals.Result.Result.Payload.Where(n=>n.Name == arguments.Animal).SingleOrDefault();
             }
             
-            var result = WinApiConnector.RequestPost<Quarry,Response<Quarry>>("http://localhost:5000/Api/", new Quarry(){Animal = tmpAnimal, Amount = arguments.Amount});
+            var result = WinApiConnector.RequestPost<Quarry,Response<Quarry>>($"{context.ConsoleSettings.ServerAddress}:{context.ConsoleSettings.Port}/Api/", new Quarry(){Animal = tmpAnimal, Amount = arguments.Amount});
             return new CommandResult(result.Result.Result.IsSuccess ? "OK" : result.Result.Message);
         }
     }

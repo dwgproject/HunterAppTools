@@ -22,12 +22,12 @@ namespace Gravityzero.Console.Utility.Commands
 
             System.Console.Write("Hasło użytkownika: ");
             var password = System.Console.ReadLine();
-            var findUser = WinApiConnector.RequestPost<User,Response<IEnumerable<User>>>("http://localhost:5000/Api/User/GetUser",
+            var findUser = WinApiConnector.RequestPost<User,Response<IEnumerable<User>>>($"{context.ConsoleSettings.ServerAddress}:{context.ConsoleSettings.Port}/Api/User/GetUser",
                             new User(){Login = login, Password = password});
             if(!findUser.Result.IsSuccess){
                 return new CommandResult();
             }
-            var result =  WinApiConnector.RequestDelete<string, Response<string>>("http://localhost:5000/Api/User/Delete"+
+            var result =  WinApiConnector.RequestDelete<string, Response<string>>($"{context.ConsoleSettings.ServerAddress}:{context.ConsoleSettings.Port}/Api/User/Delete"+
                             $"/{findUser.Result.Result.Payload.FirstOrDefault().Identifier}");
             return new CommandResult(result.Result.IsSuccess ? "Ok" : "Nie");
         }

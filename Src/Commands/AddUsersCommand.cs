@@ -27,7 +27,7 @@ namespace Gravityzero.Console.Utility.Commands
             var users = file.LoadFile(arguments.Path);
             int success = 0;
             foreach(var user in users){
-                var result = WinApiConnector.RequestPost<User, Response<User>>("",user);
+                var result = WinApiConnector.RequestPost<User, Response<User>>($"{context.ConsoleSettings.ServerAddress}:{context.ConsoleSettings.Port}/Api/User/SignUp",user);
                 if(result.Result.IsSuccess){
                     success++;
                 }
