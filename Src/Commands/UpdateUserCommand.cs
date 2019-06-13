@@ -29,7 +29,7 @@ namespace Gravityzero.Console.Utility.Commands
                     System.Console.WriteLine("Nie istnieje taki użytkownik");
                 }
                 var newUSer = new User(){Identifier=existUser.Identifier, Name=arguments.Name, Password=arguments.Password,Surname=arguments.Surname, Email=arguments.Email};
-                var result = WinApiConnector.RequestPost<User,Response<string>>("http://localhost:5000/Api/User/",newUSer);
+                var result = WinApiConnector.RequestPost<User,Response<string>>($"{context.ConsoleSettings.ServerAddress}:{context.ConsoleSettings.Port}/Api/User/",newUSer);
                 return new CommandResult(result.Result.IsSuccess ? "OK" : result.Result.Message);
             }
             else{

@@ -9,7 +9,7 @@ namespace Gravityzero.Console.Utility.Commands
 {
     public class DeleteHuntingCommand : ICommand
     {
-        public string Description => throw new System.NotImplementedException();
+        public string Description => "Usunięcie polowania";
 
         public CommandResult Execute(ConsoleContext context)
         {

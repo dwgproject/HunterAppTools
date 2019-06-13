@@ -17,7 +17,7 @@ namespace Gravityzero.Console.Utility.Commands
         protected override CommandResult Execute(ConsoleContext context, RoleArgument arguments)
         {
             Role role = new Role(){ Name = arguments.Name};
-            var result = WinApiConnector.RequestPost<Role, Result>("http://localhost:5000/Api/Configuration/AddRole", role);
+            var result = WinApiConnector.RequestPost<Role, Result>($"{context.ConsoleSettings.ServerAddress}:{context.ConsoleSettings.Port}/Api/Configuration/AddRole", role);
             return new CommandResult(result.Result.IsSuccess ? "OK." : result.Result.Message);            
         }
     }

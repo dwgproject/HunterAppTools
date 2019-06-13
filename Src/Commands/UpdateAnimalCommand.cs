@@ -18,11 +18,11 @@ namespace Gravityzero.Console.Utility.Commands
             if(string.IsNullOrEmpty(arguments.Rename)){
                 return new CommandResult("Przy update wymagany parametr -r <NAZWA>");
             }
-            var existAnimal = WinApiConnector.RequestPost<string,Response<IEnumerable<Animal>>>("http://localhost:5000/Api/",arguments.Name);
+            var existAnimal = WinApiConnector.RequestPost<string,Response<IEnumerable<Animal>>>($"{context.ConsoleSettings.ServerAddress}:{context.ConsoleSettings.Port}/Api/",arguments.Name);
             if(!existAnimal.Result.IsSuccess){
                 return new CommandResult(existAnimal.Result.Message);
             }
-            var result = WinApiConnector.RequestPost<Animal,Response<Animal>>("http://localhost:5000/Api/", 
+            var result = WinApiConnector.RequestPost<Animal,Response<Animal>>($"{context.ConsoleSettings.ServerAddress}:{context.ConsoleSettings.Port}/Api/", 
                         new Animal(){Identifier = existAnimal.Result.Result.Payload.FirstOrDefault().Identifier, Name=arguments.Rename});
             return new CommandResult(result.Result.IsSuccess ? "OK" : result.Result.Message);
         }

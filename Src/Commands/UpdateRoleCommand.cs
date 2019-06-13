@@ -12,8 +12,7 @@ namespace Gravityzero.Console.Utility.Commands
     {
         // Brak w kontrolerze metody wywołującej update roli
         // Do uzyskania obiektu po nazwie użyłem RequestPost, a nie RequestGet
-        // testPath https://localhost:44377/Role/GetRole
-        // realPath http://localhost:5000/Api/Configuration/
+
         public UpdateRoleCommand(IList<string> args) : base(args)
         {
         }
@@ -24,11 +23,11 @@ namespace Gravityzero.Console.Utility.Commands
                 System.Console.WriteLine("Przy update wymagany parametr -r <NAZWA>");
                 return new CommandResult();
             }
-            var role = WinApiConnector.RequestPost<string, Response<IEnumerable<Role>>>("http://localhost:5000/Api/Configuration/",arguments.Name);
+            var role = WinApiConnector.RequestPost<string, Response<IEnumerable<Role>>>($"{context.ConsoleSettings.ServerAddress}:{context.ConsoleSettings.Port}/Api/Configuration/",arguments.Name);
             if(!role.Result.Result.IsSuccess){
                 return new CommandResult(role.Result.Message);
             }
-            var result = WinApiConnector.RequestPost<Role,Response<Role>>("http://localhost:5000/Api/Configuration/",
+            var result = WinApiConnector.RequestPost<Role,Response<Role>>($"{context.ConsoleSettings.ServerAddress}:{context.ConsoleSettings.Port}/Api/Configuration/",
                         new Role(){Identifier=role.Result.Result.Payload.FirstOrDefault().Identifier, Name = arguments.Rename});
             return new CommandResult(result.Result.IsSuccess ? "OK" : result.Result.Message);
         }
