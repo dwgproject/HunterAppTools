@@ -23,12 +23,27 @@ namespace Gravityzero.Console.Utility.Commands
                 System.Console.WriteLine("Przy update wymagany parametr -r <NAZWA>");
                 return new CommandResult();
             }
-            var role = WinApiConnector.RequestPost<string, Response<IEnumerable<Role>>>($"{context.ConsoleSettings.ServerAddress}:{context.ConsoleSettings.Port}/Api/Configuration/",arguments.Name);
-            if(!role.Result.Result.IsSuccess){
+            var role = WinApiConnector.RequestPost<string, Response<IEnumerable<Role>>>($"{context.ConsoleSettings.ServerAddress}:{context.ConsoleSettings.Port}/Api/Configuration/GetRole",arguments.Name);
+            if (role == null)             
+                return new CommandResult("RoleResult is null.");
+            if (!role.Result.IsSuccess)             
+                return new CommandResult("Task result is unsuccesful.");
+            if(!role.Result.Result.IsSuccess)
                 return new CommandResult(role.Result.Message);
-            }
-            var result = WinApiConnector.RequestPost<Role,Response<Role>>($"{context.ConsoleSettings.ServerAddress}:{context.ConsoleSettings.Port}/Api/Configuration/",
-                        new Role(){Identifier=role.Result.Result.Payload.FirstOrDefault().Identifier, Name = arguments.Rename});
+
+            Role rowRole = role.Result.Result.Payload.FirstOrDefault();
+            if (rowRole == null)
+                return new CommandResult("There are no roles.");
+
+            var result = WinApiConnector.RequestPut<string, Response<IEnumerable<Role>>>($"{context.ConsoleSettings.ServerAddress}:{context.ConsoleSettings.Port}/Api/Configuration/UpdateRole/{rowRole.Identifier}", arguments.Rename);
+            
+            if (role == null)             
+                return new CommandResult("RoleResult after update is null.");
+            if (!role.Result.IsSuccess)             
+                return new CommandResult("Task result after update is unsuccesful.");
+            if(!role.Result.Result.IsSuccess)
+                return new CommandResult(role.Result.Message);          
+            
             return new CommandResult(result.Result.IsSuccess ? "OK" : result.Result.Message);
         }
     }
