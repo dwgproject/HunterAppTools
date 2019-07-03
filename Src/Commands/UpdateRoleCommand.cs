@@ -23,11 +23,11 @@ namespace Gravityzero.Console.Utility.Commands
                 System.Console.WriteLine("Przy update wymagany parametr -r <NAZWA>");
                 return new CommandResult();
             }
-            var role = WinApiConnector.RequestPost<string, Response<IEnumerable<Role>>>($"{context.ConsoleSettings.ServerAddress}:{context.ConsoleSettings.Port}/Api/Configuration/",arguments.Name);
+            var role = WinApiConnector.RequestPost<string, Response<IEnumerable<Role>>>($"{context.ConsoleSettings.ServerAddress}:{context.ConsoleSettings.Port}/Api/Configuration/GetRole",arguments.Name);
             if(!role.Result.Result.IsSuccess){
                 return new CommandResult(role.Result.Message);
             }
-            var result = WinApiConnector.RequestPost<Role,Response<Role>>($"{context.ConsoleSettings.ServerAddress}:{context.ConsoleSettings.Port}/Api/Configuration/",
+            var result = WinApiConnector.RequestPost<Role,Response<Role>>($"{context.ConsoleSettings.ServerAddress}:{context.ConsoleSettings.Port}/Api/Configuration/UpdateRole",
                         new Role(){Identifier=role.Result.Result.Payload.FirstOrDefault().Identifier, Name = arguments.Rename});
             return new CommandResult(result.Result.IsSuccess ? "OK" : result.Result.Message);
         }

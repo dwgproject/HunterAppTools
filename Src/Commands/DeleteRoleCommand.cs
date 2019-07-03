@@ -18,7 +18,7 @@ namespace Gravityzero.Console.Utility.Commands
 
         protected override CommandResult Execute(ConsoleContext context, RoleArgument arguments)
         {
-            var role = WinApiConnector.RequestPost<string, Response<IEnumerable<Role>>>($"{context.ConsoleSettings.ServerAddress}:{context.ConsoleSettings.Port}/Api/Configuration/",arguments.Name);
+            var role = WinApiConnector.RequestPost<string, Response<IEnumerable<Role>>>($"{context.ConsoleSettings.ServerAddress}:{context.ConsoleSettings.Port}/Api/Configuration/GetRole",arguments.Name);
             if(role.Result.Result.Payload.Count()==1){
                 var result = WinApiConnector.RequestDelete<string, Response<string>>($"{context.ConsoleSettings.ServerAddress}:{context.ConsoleSettings.Port}/Api/Configuration/DeleteRole"+
                             $"/{role.Result.Result.Payload.FirstOrDefault().Identifier}");
