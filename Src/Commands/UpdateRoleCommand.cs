@@ -27,7 +27,8 @@ namespace Gravityzero.Console.Utility.Commands
             if(!role.Result.Result.IsSuccess){
                 return new CommandResult(role.Result.Message);
             }
-            var result = WinApiConnector.RequestPost<Role,Response<Role>>($"{context.ConsoleSettings.ServerAddress}:{context.ConsoleSettings.Port}/Api/Configuration/UpdateRole",
+
+            var result = WinApiConnector.RequestPut<Role,Response<Role>>($"{context.ConsoleSettings.ServerAddress}:{context.ConsoleSettings.Port}/Api/Configuration/UpdateRole",
                         new Role(){Identifier=role.Result.Result.Payload.FirstOrDefault().Identifier, Name = arguments.Rename});
             return new CommandResult(result.Result.IsSuccess ? "OK" : result.Result.Message);
         }
