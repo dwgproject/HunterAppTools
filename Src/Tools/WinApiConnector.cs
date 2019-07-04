@@ -61,7 +61,7 @@ namespace Gravityzero.Console.Utility.Tools
             }
         }
 
-        public async static Task<ConnectorResult<TResult>> RequestDelete<TData, TResult>(string path) where TResult : new(){
+        public async static Task<ConnectorResult<TResult>> RequestDelete<TResult>(string path) where TResult : new(){
             if (string.IsNullOrEmpty(path)) return new ConnectorResult<TResult>($"Path is empty.");
             try
             {
@@ -85,7 +85,7 @@ namespace Gravityzero.Console.Utility.Tools
             }
         }
 
-        public async static Task<ConnectorResult<TResult>> RequestGet<TData, TResult>(string path, TData data) where TResult : new(){
+        public async static Task<ConnectorResult<TResult>> RequestGet<TResult>(string path) where TResult : new(){
             if (string.IsNullOrEmpty(path)) return new ConnectorResult<TResult>($"Path is empty.");
             try
             {
