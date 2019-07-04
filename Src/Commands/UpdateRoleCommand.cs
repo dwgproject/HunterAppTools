@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -19,17 +20,31 @@ namespace Gravityzero.Console.Utility.Commands
 
         protected override CommandResult Execute(ConsoleContext context, RoleArgument arguments)
         {
-            if(string.IsNullOrEmpty(arguments.Rename)){
-                System.Console.WriteLine("Przy update wymagany parametr -r <NAZWA>");
+            if(string.IsNullOrEmpty(arguments.Rename) || string.IsNullOrEmpty(arguments.Name)){
+                System.Console.WriteLine("Przy update wymagany parametr -n <NAZWA> -r <NAZWA>");
                 return new CommandResult();
             }
-            var role = WinApiConnector.RequestPost<string, Response<IEnumerable<Role>>>($"{context.ConsoleSettings.ServerAddress}:{context.ConsoleSettings.Port}/Api/Configuration/",arguments.Name);
+
+            var role = WinApiConnector.RequestPost<string, Response<IEnumerable<Role>>>($"{context.ConsoleSettings.ServerAddress}:{context.ConsoleSettings.Port}/Api/Configuration/GetRole",arguments.Name);
+                     
             if(!role.Result.Result.IsSuccess){
                 return new CommandResult(role.Result.Message);
             }
-            var result = WinApiConnector.RequestPost<Role,Response<Role>>($"{context.ConsoleSettings.ServerAddress}:{context.ConsoleSettings.Port}/Api/Configuration/",
-                        new Role(){Identifier=role.Result.Result.Payload.FirstOrDefault().Identifier, Name = arguments.Rename});
-            return new CommandResult(result.Result.IsSuccess ? "OK" : result.Result.Message);
+
+            if(role == null){
+                return new CommandResult("Zapytanie nie powiodło się");
+            } 
+            if(role.Result.Result.Payload.Count() != 1){
+                return new CommandResult(role.Result.Result.Payload.Count() == 0 ? "Nie można zmienić roli, która nie istnieje" : "Wiecej niż jeden wynik");
+            } 
+            var existRole = role.Result.Result.Payload.FirstOrDefault();
+                
+            if(existRole == null){
+                return new CommandResult("NULL");
+            }
+            var result = WinApiConnector.RequestPut<Role, Response<Role>>($"{context.ConsoleSettings.ServerAddress}:{context.ConsoleSettings.Port}/Api/Configuration/UpdateRole",
+                    new Role(){Identifier = existRole.Identifier, Name = arguments.Rename});
+            return new CommandResult(result.Result.IsSuccess ? "OK" : result.Result.Message);           
         }
     }
 }

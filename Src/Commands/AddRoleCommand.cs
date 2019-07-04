@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using CommandLine;
 using Gravityzero.Console.Utility.Context;
 using Gravityzero.Console.Utility.Infrastructure;
@@ -17,6 +18,13 @@ namespace Gravityzero.Console.Utility.Commands
         protected override CommandResult Execute(ConsoleContext context, RoleArgument arguments)
         {
             Role role = new Role(){ Name = arguments.Name};
+            var checkIfExist = WinApiConnector.RequestPost<string, Response<IEnumerable<Role>>>($"{context.ConsoleSettings.ServerAddress}:{context.ConsoleSettings.Port}/Api/Configuration/GetRole",arguments.Name);
+            if(checkIfExist == null){
+                return new CommandResult("NULL");
+            }
+            if(checkIfExist.Result.Result.Payload.FirstOrDefault() != null){
+                return new CommandResult("Istnieje taka rola");
+            }
             var result = WinApiConnector.RequestPost<Role, Result>($"{context.ConsoleSettings.ServerAddress}:{context.ConsoleSettings.Port}/Api/Configuration/AddRole", role);
             return new CommandResult(result.Result.IsSuccess ? "OK." : result.Result.Message);            
         }
