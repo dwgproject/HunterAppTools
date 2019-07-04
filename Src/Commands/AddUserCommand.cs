@@ -24,8 +24,7 @@ namespace Gravityzero.Console.Utility.Commands
 
         protected override CommandResult Execute(ConsoleContext context, UserArguments arguments)
         {
-            var roles = WinApiConnector.RequestGet<string,Response<IEnumerable<Role>>>($"{context.ConsoleSettings.ServerAddress}:{context.ConsoleSettings.Port}/Api/Configuration/GetAllRoles","");
-
+            var roles = WinApiConnector.RequestGet<Response<IEnumerable<Role>>>($"{context.ConsoleSettings.ServerAddress}:{context.ConsoleSettings.Port}/Api/Configuration/GetAllRoles");
             System.Console.WriteLine("Wybierz role dla nowego użytkownika");
             int index =0;
             foreach(var r in roles.Result.Result.Payload){

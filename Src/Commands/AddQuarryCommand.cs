@@ -16,7 +16,7 @@ namespace Gravityzero.Console.Utility.Commands
 
         protected override CommandResult Execute(ConsoleContext context, QuarryArguments arguments)
         {
-            var animals = WinApiConnector.RequestGet<string,Response<IEnumerable<Animal>>>($"{context.ConsoleSettings.ServerAddress}:{context.ConsoleSettings.Port}/Api","");
+            var animals = WinApiConnector.RequestGet<Response<IEnumerable<Animal>>>($"{context.ConsoleSettings.ServerAddress}:{context.ConsoleSettings.Port}/Api");
             Animal tmpAnimal = new Animal();
             if(string.IsNullOrEmpty(arguments.Animal)){             
                 foreach(var item in animals.Result.Result.Payload){

@@ -16,7 +16,7 @@ namespace Gravityzero.Console.Utility.Commands
         public CommandResult Execute(ConsoleContext context)
         {
             List<Role> listRoles = new List<Role>();
-            var result = WinApiConnector.RequestGet<Response<IEnumerable<Role>>>($"{context.ConsoleSettings.ServerAddress}:{context.ConsoleSettings.Port}/Api/Configuration/GetAllRoles","");
+            var result = WinApiConnector.RequestGet<Response<IEnumerable<Role>>>($"{context.ConsoleSettings.ServerAddress}:{context.ConsoleSettings.Port}/Api/Configuration/GetAllRoles");
             if(result.Result.Result.Payload.Count()>0){
                 foreach(var role in result.Result.Result.Payload){
                     System.Console.WriteLine($"{role.Name} -- ({role.Identifier})".PadLeft(70));
