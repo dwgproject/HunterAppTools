@@ -1,13 +1,12 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
 using Gravityzero.Console.Utility.Commands;
 using Gravityzero.Console.Utility.Context;
 using Gravityzero.Console.Utility.Infrastructure;
-using Gravityzero.Console.Utility.Tools;
 
-namespace Gravityzero.Console.Utility.Engine{
+namespace Gravityzero.Console.Utility.Engine
+{
 
     public class ConsoleEngine : IDisposable
     {
@@ -51,19 +50,42 @@ namespace Gravityzero.Console.Utility.Engine{
                 foreach (string call in commandsQueue)
                 {
                     ICommand currentCommand = consoleContext.GetCommandIfExist(call, commandArgs);
-                    CommandResult result = currentCommand.Execute(consoleContext);
-                    if (!string.IsNullOrEmpty(result.Message))
-                        System.Console.WriteLine(result.Message);
-                    if (currentCommand is DummyCommand)
+                    try
+                    {
+                        CommandResult result = currentCommand.Execute(consoleContext);
+                        if (!string.IsNullOrEmpty(result.Message))
+                            DisplayMessage(result.Message, result.IsSuccess ? ConsoleColor.White : ConsoleColor.Red);
+                        if (currentCommand is DummyCommand)
+                            break;
+                    }
+                    catch(Exception ex)
+                    {
+                        
+                        DisplayMessage(ex.ToString(), ConsoleColor.Magenta);
                         break;
+                    }
                 }
             }
         }
+        
+        private void DisplayMessage(string message, ConsoleColor color)
+        {
+            System.Console.ForegroundColor = color; 
+            System.Console.WriteLine(string.Empty);
+            message = string.Concat("\t", message);
+            if (message.Contains("\r\n"))
+                message = message.Replace("\r\n","\r\n\t");
+            System.Console.WriteLine(message);
+            System.Console.WriteLine(string.Empty);
+            System.Console.ResetColor();
+        }
+        
         public static FileVersionInfo GetAppInfo(){
             System.Reflection.Assembly assembly = System.Reflection.Assembly.GetExecutingAssembly();
             FileVersionInfo fvi = FileVersionInfo.GetVersionInfo(assembly.Location);
             return fvi;
         }
+        
         public void Dispose()
         {
             consoleContext?.Dispose();
