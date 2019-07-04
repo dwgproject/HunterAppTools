@@ -55,7 +55,7 @@ namespace Gravityzero.Console.Utility.Engine{
                     {
                         CommandResult result = currentCommand.Execute(consoleContext);
                         if (!string.IsNullOrEmpty(result.Message))
-                            DisplayMessage(result.Message, ConsoleColor.White);
+                            DisplayMessage(result.Message, result.IsSuccess ? ConsoleColor.White : ConsoleColor.Red);
                         if (currentCommand is DummyCommand)
                             break;
                     }
