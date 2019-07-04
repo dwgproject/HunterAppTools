@@ -20,7 +20,7 @@ namespace Gravityzero.Console.Utility.Commands
         {
             var role = WinApiConnector.RequestPost<string, Response<IEnumerable<Role>>>($"{context.ConsoleSettings.ServerAddress}:{context.ConsoleSettings.Port}/Api/Configuration/GetRole",arguments.Name);
             if(role.Result.Result.Payload.Count()==1){
-                var result = WinApiConnector.RequestDelete<string, Response<string>>($"{context.ConsoleSettings.ServerAddress}:{context.ConsoleSettings.Port}/Api/Configuration/DeleteRole"+
+                var result = WinApiConnector.RequestDelete<Response<string>>($"{context.ConsoleSettings.ServerAddress}:{context.ConsoleSettings.Port}/Api/Configuration/DeleteRole"+
                             $"/{role.Result.Result.Payload.FirstOrDefault().Identifier}");
                 return new CommandResult(result.Result.IsSuccess ? "OK" : result.Result.Message);
             }

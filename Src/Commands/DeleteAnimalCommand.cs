@@ -17,7 +17,7 @@ namespace Gravityzero.Console.Utility.Commands
         {
             var existAnimal = WinApiConnector.RequestPost<string,Response<IEnumerable<Animal>>>("", arguments.Name);
             if(existAnimal.Result.Result.Payload.Count()==1){
-                var result = WinApiConnector.RequestDelete<string,Response<string>>($"{context.ConsoleSettings.ServerAddress}:{context.ConsoleSettings.Port}/Api"+$"/{existAnimal.Result.Result.Payload.FirstOrDefault().Identifier}");
+                var result = WinApiConnector.RequestDelete<Response<string>>($"{context.ConsoleSettings.ServerAddress}:{context.ConsoleSettings.Port}/Api"+$"/{existAnimal.Result.Result.Payload.FirstOrDefault().Identifier}");
                 return new CommandResult(result.Result.IsSuccess ? "OK" : result.Result.Message);
             }
             else if(existAnimal.Result.Result.Payload.Count()>1){
