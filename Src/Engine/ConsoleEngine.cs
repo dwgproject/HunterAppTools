@@ -1,13 +1,12 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
 using Gravityzero.Console.Utility.Commands;
 using Gravityzero.Console.Utility.Context;
 using Gravityzero.Console.Utility.Infrastructure;
-using Gravityzero.Console.Utility.Tools;
 
-namespace Gravityzero.Console.Utility.Engine{
+namespace Gravityzero.Console.Utility.Engine
+{
 
     public class ConsoleEngine : IDisposable
     {
@@ -61,7 +60,8 @@ namespace Gravityzero.Console.Utility.Engine{
                     }
                     catch(Exception ex)
                     {
-                        DisplayMessage(ex.ToString(), ConsoleColor.Magneta);
+                        
+                        DisplayMessage(ex.ToString(), ConsoleColor.Magenta);
                         break;
                     }
                 }
@@ -72,7 +72,10 @@ namespace Gravityzero.Console.Utility.Engine{
         {
             System.Console.ForegroundColor = color; 
             System.Console.WriteLine(string.Empty);
-            System.Console.WriteLine(string.Contact("\t", message));
+            message = string.Concat("\t", message);
+            if (message.Contains("\r\n"))
+                message = message.Replace("\r\n","\r\n\t");
+            System.Console.WriteLine(message);
             System.Console.WriteLine(string.Empty);
             System.Console.ResetColor();
         }
