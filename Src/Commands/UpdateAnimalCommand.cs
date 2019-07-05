@@ -23,7 +23,7 @@ namespace Gravityzero.Console.Utility.Commands
                 return new CommandResult(existAnimal.Result.Message);
             }
             var result = WinApiConnector.RequestPost<Animal,Response<Animal>>($"{context.ConsoleSettings.ServerAddress}:{context.ConsoleSettings.Port}/Api/", 
-                        new Animal(){Identifier = existAnimal.Result.Result.Payload.FirstOrDefault().Identifier, Name=arguments.Rename});
+                        new Animal(){Identifier = existAnimal.Result.Response.Payload.FirstOrDefault().Identifier, Name=arguments.Rename});
             return new CommandResult(result.Result.IsSuccess ? "OK" : result.Result.Message);
         }
     }

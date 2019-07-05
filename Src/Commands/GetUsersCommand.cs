@@ -13,7 +13,7 @@ namespace Gravityzero.Console.Utility.Commands
         public CommandResult Execute(ConsoleContext context)
         {
             var result = WinApiConnector.RequestGet<Response<IEnumerable<User>>>($"{context.ConsoleSettings.ServerAddress}:{context.ConsoleSettings.Port}/Api/User/GetAll");
-            foreach(var user in result.Result.Result.Payload){
+            foreach(var user in result.Result.Response.Payload){
                 System.Console.WriteLine($"{user.Login} - {user.Role.Name}");
             }
             return new CommandResult(result.Result.IsSuccess ? "OK" : result.Result.Message);

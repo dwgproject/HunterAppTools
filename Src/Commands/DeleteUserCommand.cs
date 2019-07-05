@@ -28,7 +28,7 @@ namespace Gravityzero.Console.Utility.Commands
                 return new CommandResult();
             }
             var result =  WinApiConnector.RequestDelete<Response<string>>($"{context.ConsoleSettings.ServerAddress}:{context.ConsoleSettings.Port}/Api/User/Delete"+
-                            $"/{findUser.Result.Result.Payload.FirstOrDefault().Identifier}");
+                            $"/{findUser.Result.Response.Payload.FirstOrDefault().Identifier}");
             return new CommandResult(result.Result.IsSuccess ? "Ok" : "Nie");
         }
     }

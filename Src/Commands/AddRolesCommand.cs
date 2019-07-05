@@ -31,7 +31,7 @@ namespace Gravityzero.Console.Utility.Commands
                 
             foreach(var role in listRoles){
                 var result = WinApiConnector.RequestPost<Role, Response<Role>>($"{context.ConsoleSettings.ServerAddress}:{context.ConsoleSettings.Port}/Api/Configuration/AddRole", role);
-                if(result.Result.Result.IsSuccess){
+                if(result.Result.Response.IsSuccess){
                     successIndex++;
                 }
                 else{

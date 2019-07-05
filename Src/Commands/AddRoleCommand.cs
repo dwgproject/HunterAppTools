@@ -22,7 +22,7 @@ namespace Gravityzero.Console.Utility.Commands
             if(checkIfExist == null){
                 return new CommandResult("NULL");
             }
-            if(checkIfExist.Result.Result.Payload.FirstOrDefault() != null){
+            if(checkIfExist.Result.Response.Payload.FirstOrDefault() != null){
                 return new CommandResult("Istnieje taka rola");
             }
             var result = WinApiConnector.RequestPost<Role, Result>($"{context.ConsoleSettings.ServerAddress}:{context.ConsoleSettings.Port}/Api/Configuration/AddRole", role);

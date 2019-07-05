@@ -17,21 +17,23 @@ namespace Gravityzero.Console.Utility.Tools
             try
             {
                 var response = await client.PostAsync(path, content);
-                if (response.IsSuccessStatusCode){
+                if (response.IsSuccessStatusCode)
+                {
                     var serverResponse = await response.Content.ReadAsStringAsync();
-                    var result = JsonConvert.DeserializeObject<TResult>(serverResponse);
-                    return new ConnectorResult<TResult>(result);
-                }else{
+                    return SerializationHandler<TResult>(serverResponse);   
+                }
+                else
+                {
                     return new ConnectorResult<TResult>($"Occurred code: {response.StatusCode.ToString()}");
                 }
             }
             catch(ArgumentNullException ex)
             {
-                return new ConnectorResult<TResult>(ex.Message);
+                return new ConnectorResult<TResult>(ex.ToString());
             }
             catch(HttpRequestException ex)
             {
-                return new ConnectorResult<TResult>(ex.Message);
+                return new ConnectorResult<TResult>(ex.ToString());
             }
         }
 
@@ -45,19 +47,18 @@ namespace Gravityzero.Console.Utility.Tools
                 if (response.IsSuccessStatusCode)
                 {
                     string content = await response.Content.ReadAsStringAsync();
-                    var result = JsonConvert.DeserializeObject<TResult>(content);
-                    return new ConnectorResult<TResult>(result);
+                    return SerializationHandler<TResult>(content);
                 }else{
                     return new ConnectorResult<TResult>($"Occurred code: {response.StatusCode.ToString()}");
                 }
             }
             catch(ArgumentNullException ex)
             {
-                return new ConnectorResult<TResult>(ex.Message);
+                return new ConnectorResult<TResult>(ex.ToString());
             }
             catch(HttpRequestException ex)
             {
-                return new ConnectorResult<TResult>(ex.Message);
+                return new ConnectorResult<TResult>(ex.ToString());
             }
         }
 
@@ -69,23 +70,23 @@ namespace Gravityzero.Console.Utility.Tools
                 if (response.IsSuccessStatusCode)
                 {
                     string content = await response.Content.ReadAsStringAsync();
-                    var result = JsonConvert.DeserializeObject<TResult>(content);
-                    return new ConnectorResult<TResult>(result);
+                    return SerializationHandler<TResult>(content);   
                 }else{
                     return new ConnectorResult<TResult>($"Occurred code: {response.StatusCode.ToString()}");
                 }
             }
             catch(ArgumentNullException ex)
             {
-                return new ConnectorResult<TResult>(ex.Message);
+                return new ConnectorResult<TResult>(ex.ToString());
             }
             catch(HttpRequestException ex)
             {
-                return new ConnectorResult<TResult>(ex.Message);
+                return new ConnectorResult<TResult>(ex.ToString());
             }
         }
 
-        public async static Task<ConnectorResult<TResult>> RequestGet<TResult>(string path) where TResult : new(){
+        public async static Task<ConnectorResult<TResult>> RequestGet<TResult>(string path) where TResult : new()
+        {
             if (string.IsNullOrEmpty(path)) return new ConnectorResult<TResult>($"Path is empty.");
             try
             {
@@ -93,20 +94,33 @@ namespace Gravityzero.Console.Utility.Tools
                 if (response.IsSuccessStatusCode)
                 {
                     string content = await response.Content.ReadAsStringAsync();
-                    var result = JsonConvert.DeserializeObject<TResult>(content);
-                    return new ConnectorResult<TResult>(result);
+                    return SerializationHandler<TResult>(content);                    
                 }else{
                     return new ConnectorResult<TResult>($"Occurred code: {response.StatusCode.ToString()}");
                 }
             }
             catch(ArgumentNullException ex)
             {
-                return new ConnectorResult<TResult>(ex.Message);
+                return new ConnectorResult<TResult>(ex.ToString());
             }
             catch(HttpRequestException ex)
             {
-                return new ConnectorResult<TResult>(ex.Message);
+                return new ConnectorResult<TResult>(ex.ToString());
             }
         }
+
+        private static ConnectorResult<TResult> SerializationHandler<TResult>(string serializedContent) where TResult : new()
+        {
+            try
+            {
+                var result = JsonConvert.DeserializeObject<TResult>(serializedContent);
+                return new ConnectorResult<TResult>(result);
+            }
+            catch(Exception ex)
+            {
+                return new ConnectorResult<TResult>(ex.ToString());
+            }
+        }
+
     }
 }

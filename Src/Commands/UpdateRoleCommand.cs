@@ -27,17 +27,17 @@ namespace Gravityzero.Console.Utility.Commands
 
             var role = WinApiConnector.RequestPost<string, Response<IEnumerable<Role>>>($"{context.ConsoleSettings.ServerAddress}:{context.ConsoleSettings.Port}/Api/Configuration/GetRole",arguments.Name);
                      
-            if(!role.Result.Result.IsSuccess){
+            if(!role.Result.Response.IsSuccess){
                 return new CommandResult(role.Result.Message);
             }
 
             if(role == null){
                 return new CommandResult("Zapytanie nie powiodło się");
             } 
-            if(role.Result.Result.Payload.Count() != 1){
-                return new CommandResult(role.Result.Result.Payload.Count() == 0 ? "Nie można zmienić roli, która nie istnieje" : "Wiecej niż jeden wynik");
+            if(role.Result.Response.Payload.Count() != 1){
+                return new CommandResult(role.Result.Response.Payload.Count() == 0 ? "Nie można zmienić roli, która nie istnieje" : "Wiecej niż jeden wynik");
             } 
-            var existRole = role.Result.Result.Payload.FirstOrDefault();
+            var existRole = role.Result.Response.Payload.FirstOrDefault();
                 
             if(existRole == null){
                 return new CommandResult("NULL");

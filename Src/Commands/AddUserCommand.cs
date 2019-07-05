@@ -6,6 +6,7 @@ using Gravityzero.Console.Utility.Tools;
 using Gravityzero.Console.Utility.Model;
 using log4net;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Gravityzero.Console.Utility.Commands
 {
@@ -24,23 +25,53 @@ namespace Gravityzero.Console.Utility.Commands
 
         protected override CommandResult Execute(ConsoleContext context, UserArguments arguments)
         {
-            var roles = WinApiConnector.RequestGet<Response<IEnumerable<Role>>>($"{context.ConsoleSettings.ServerAddress}:{context.ConsoleSettings.Port}/Api/Configuration/GetAllRoles");
-            System.Console.WriteLine("Wybierz role dla nowego użytkownika");
-            int index =0;
-            foreach(var r in roles.Result.Result.Payload){
-                System.Console.WriteLine($"{index+1}. {r.Name}");
-                index++;
+            Task<ConnectorResult<Response<IEnumerable<Role>>>> roles = WinApiConnector.RequestGet<Response<IEnumerable<Role>>>($"{context.ConsoleSettings.ServerAddress}:{context.ConsoleSettings.Port}/Api/Configuration/GetAllRoles");
+            ConnectorResult<Response<IEnumerable<Role>>> connectorResult = roles.Result;
+
+            if (!connectorResult.IsSuccess)
+                return new CommandResult(connectorResult.Message);
+
+            if (!connectorResult.Response.IsSuccess)
+                return new CommandResult(connectorResult.Response.Code);
+
+            if (!connectorResult.Response.Payload.Any())
+                return new CommandResult("There are no roles for choice.");
+
+            Role[] roleArray = connectorResult.Response.Payload.ToArray();
+            System.Console.WriteLine($"Wybierz role dla nowego użytkownika: (1 - {roleArray.Length})");
+
+            int index = 1;
+            foreach(Role item in roleArray)
+                System.Console.WriteLine($"{ index++ }. { item.Name }");
+
+            int chosenRoleIndex = 0;
+            bool shouldWork = true;
+            do
+            {
+                string choice = System.Console.ReadLine();
+                bool isParsed = int.TryParse(choice, out chosenRoleIndex);
+                shouldWork = isParsed ? chosenRoleIndex > roleArray.Length : true;
             }
-            string choice = "";
-            int value=0;
-            while(choice=="" || value==0){
-                choice = System.Console.ReadLine();
-                int.TryParse(choice, out value);
-            }
-            var role = new Role(){Identifier=roles.Result.Result.Payload.Select(i=>i.Identifier).ElementAt(value-1)};
-            var result = WinApiConnector.RequestPost<Model.User, Response<User>>($"{context.ConsoleSettings.ServerAddress}:{context.ConsoleSettings.Port}/Api/User/SignUp",new Model.User(){Login = arguments.Login, Name = arguments.Name,
-                        Password = arguments.Password, Surname = arguments.Surname, Role = role, Email = arguments.Email});
+            while(shouldWork);
+    
+            var role = new Role()
+            {
+                Identifier = roleArray[chosenRoleIndex - 1].Identifier
+            };
+            
+            var result = WinApiConnector.RequestPost<Model.User, Response<User>>($"{context.ConsoleSettings.ServerAddress}:{context.ConsoleSettings.Port}/Api/User/SignUp",
+                        new Model.User()
+                        {
+                            Login = arguments.Login, 
+                            Name = arguments.Name,
+                            Password = arguments.Password, 
+                            Surname = arguments.Surname, 
+                            Role = role, 
+                            Email = arguments.Email
+                        });
+
             System.Console.WriteLine($"Dodaje usera. Oto jego dane: {arguments.Name} {arguments.Surname}");
+
             return new CommandResult(result.Result.IsSuccess ? "OK" : result.Result.Message);
         }
     }
@@ -62,18 +93,14 @@ namespace Gravityzero.Console.Utility.Commands
         [Option('e', "email", Required = true, HelpText = "Email użytkownika.")]
         public string Email {get; set;}      
     }
-
 }
 
 
-            // using(IWinApiService<User, UserResult> service = new WinApiPostService<User, UserResult>()){
-            //     try
-            //     {
-            //         service.Send();
-            //     }
-            //     catch(Exception ex)
-            //     {
-            //         if (logger.IsErrorEnabled)
-            //             logger.Error(ex);
-            //     }
+// string choice = string.Empty;
+            // int value = 0;
+            // while(string.IsNullOrEmpty(choice) || value==0){
+            //     choice = System.Console.ReadLine();
+            //     int.TryParse(choice, out value);
             // }
+
+            //roles.Result.Response.Payload.Select(i => i.Identifier).ElementAt(value - 1)

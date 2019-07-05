@@ -40,8 +40,8 @@ namespace Gravityzero.Console.Utility.Commands
         private User GetUser(User user)
         {
             var result = WinApiConnector.RequestPost<User, Response<IEnumerable<User>>>("http://localhost:5000/Api/User/",user);
-            if(result.Result.Result.IsSuccess){
-                return new User(){Identifier=result.Result.Result.Payload.FirstOrDefault().Identifier};
+            if(result.Result.Response.IsSuccess){
+                return new User(){Identifier=result.Result.Response.Payload.FirstOrDefault().Identifier};
             }
             else
             {
