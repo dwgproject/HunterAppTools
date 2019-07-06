@@ -60,7 +60,6 @@ namespace Gravityzero.Console.Utility.Engine
                     }
                     catch(Exception ex)
                     {
-                        
                         DisplayMessage(ex.ToString(), ConsoleColor.Magenta);
                         break;
                     }

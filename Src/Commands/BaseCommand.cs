@@ -30,8 +30,6 @@ namespace Gravityzero.Console.Utility.Commands
             }else{
                 
             }
-                
-
             return new CommandResult("Problem with parsing arguments.");
         }
 

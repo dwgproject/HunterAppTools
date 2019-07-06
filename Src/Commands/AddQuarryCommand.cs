@@ -19,20 +19,20 @@ namespace Gravityzero.Console.Utility.Commands
             var animals = WinApiConnector.RequestGet<Response<IEnumerable<Animal>>>($"{context.ConsoleSettings.ServerAddress}:{context.ConsoleSettings.Port}/Api");
             Animal tmpAnimal = new Animal();
             if(string.IsNullOrEmpty(arguments.Animal)){             
-                foreach(var item in animals.Result.Result.Payload){
+                foreach(var item in animals.Result.Response.Payload){
                     System.Console.WriteLine($"{item.Name}");
                 }
                 System.Console.Write("Wpisz nazwę zwierzęcia: ");
                 var animal = System.Console.ReadLine();
-                var existAnimal = animals.Result.Result.Payload.Where(n=>n.Name == animal).SingleOrDefault();
+                var existAnimal = animals.Result.Response.Payload.Where(n=>n.Name == animal).SingleOrDefault();
                 tmpAnimal = existAnimal;
             }
             else{
-                tmpAnimal = animals.Result.Result.Payload.Where(n=>n.Name == arguments.Animal).SingleOrDefault();
+                tmpAnimal = animals.Result.Response.Payload.Where(n=>n.Name == arguments.Animal).SingleOrDefault();
             }
             
             var result = WinApiConnector.RequestPost<Quarry,Response<Quarry>>($"{context.ConsoleSettings.ServerAddress}:{context.ConsoleSettings.Port}/Api/", new Quarry(){Animal = tmpAnimal, Amount = arguments.Amount});
-            return new CommandResult(result.Result.Result.IsSuccess ? "OK" : result.Result.Message);
+            return new CommandResult(result.Result.Response.IsSuccess ? "OK" : result.Result.Message);
         }
     }
 

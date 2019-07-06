@@ -1,15 +1,15 @@
 namespace Gravityzero.Console.Utility.Tools{
 
-    public class ConnectorResult<TResult>  where TResult : new()
+    public class ConnectorResult<TResponse>  where TResponse : new()
     {
         public bool IsSuccess { get; private set; }
         public string Message { get; private set; }
-        public TResult Result { get; private set;}
+        public TResponse Response { get; private set;}
 
-        public ConnectorResult(TResult result)
+        public ConnectorResult(TResponse result)
         {
             IsSuccess = true;
-            Result = result;
+            Response = result;
         }
 
         public ConnectorResult(string message)
@@ -24,7 +24,7 @@ namespace Gravityzero.Console.Utility.Tools{
 
         private void Init(){
             IsSuccess = false;
-            Result = new TResult();
+            Response = new TResponse();
         }        
     }
 }
