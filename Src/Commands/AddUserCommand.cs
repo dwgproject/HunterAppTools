@@ -10,8 +10,6 @@ using System.Threading.Tasks;
 
 namespace Gravityzero.Console.Utility.Commands
 {
-    //testPath https://localhost:44377/User/SignUp
-    //realPAth http://localhost:5000/Api/Configuration/GetAllRoles
     public class AddUserCommand : BaseCommand<UserArguments>
     {
         private readonly ILog logger = LogManager.GetLogger(typeof(AddUserCommand));
@@ -29,13 +27,13 @@ namespace Gravityzero.Console.Utility.Commands
             ConnectorResult<Response<IEnumerable<Role>>> connectorResult = roles.Result;
 
             if (!connectorResult.IsSuccess)
-                return new CommandResult(connectorResult.Message);
+                return new CommandResult(connectorResult.Message, false);
 
             if (!connectorResult.Response.IsSuccess)
-                return new CommandResult(connectorResult.Response.Code);
+                return new CommandResult(connectorResult.Response.Code, false);
 
             if (!connectorResult.Response.Payload.Any())
-                return new CommandResult("There are no roles for choice.");
+                return new CommandResult("There are no roles for choice.", false);
 
             Role[] roleArray = connectorResult.Response.Payload.ToArray();
             System.Console.WriteLine($"Wybierz role dla nowego użytkownika: (1 - {roleArray.Length})");
@@ -70,9 +68,17 @@ namespace Gravityzero.Console.Utility.Commands
                             Email = arguments.Email
                         });
 
-            System.Console.WriteLine($"Dodaje usera. Oto jego dane: {arguments.Name} {arguments.Surname}");
+            ConnectorResult<Response<User>> postResult = result.Result;
+            if (!postResult.IsSuccess)
+                return new CommandResult(postResult.Message, false);
+            
+            if (!postResult.Response.IsSuccess)
+                return new CommandResult(postResult.Response.Code, false);
 
-            return new CommandResult(result.Result.IsSuccess ? "OK" : result.Result.Message);
+            if (postResult.Response.Payload == null)
+                return new CommandResult("The payload of user is empty.", false);
+
+            return new CommandResult("The user has been added.", true);
         }
     }
 
@@ -94,13 +100,3 @@ namespace Gravityzero.Console.Utility.Commands
         public string Email {get; set;}      
     }
 }
-
-
-// string choice = string.Empty;
-            // int value = 0;
-            // while(string.IsNullOrEmpty(choice) || value==0){
-            //     choice = System.Console.ReadLine();
-            //     int.TryParse(choice, out value);
-            // }
-
-            //roles.Result.Response.Payload.Select(i => i.Identifier).ElementAt(value - 1)
