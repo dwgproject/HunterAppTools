@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using CommandLine;
 using Gravityzero.Console.Utility.Context;
 using Gravityzero.Console.Utility.Infrastructure;
@@ -18,15 +19,24 @@ namespace Gravityzero.Console.Utility.Commands
         protected override CommandResult Execute(ConsoleContext context, RoleArgument arguments)
         {
             Role role = new Role(){ Name = arguments.Name};
-            var checkIfExist = WinApiConnector.RequestPost<string, Response<IEnumerable<Role>>>($"{context.ConsoleSettings.ServerAddress}:{context.ConsoleSettings.Port}/Api/Configuration/GetRole",arguments.Name);
-            if(checkIfExist == null){
-                return new CommandResult("NULL");
-            }
-            if(checkIfExist.Result.Response.Payload.FirstOrDefault() != null){
-                return new CommandResult("Istnieje taka rola");
-            }
-            var result = WinApiConnector.RequestPost<Role, Result>($"{context.ConsoleSettings.ServerAddress}:{context.ConsoleSettings.Port}/Api/Configuration/AddRole", role);
-            return new CommandResult(result.Result.IsSuccess ? "OK." : result.Result.Message);            
+            Task<ConnectorResult<Response<IEnumerable<Role>>>> checkIfExist = WinApiConnector.RequestPost<string, Response<IEnumerable<Role>>>($"{context.ConsoleSettings.ServerAddress}:{context.ConsoleSettings.Port}/Api/Configuration/GetRole",arguments.Name);
+            ConnectorResult<Response<IEnumerable<Role>>> preResult = checkIfExist.Result;
+            if(!preResult.IsSuccess)
+                return new CommandResult(preResult.Message, false);
+            if(!preResult.Response.IsSuccess)
+                return new CommandResult(preResult.Response.Code, false);
+            if(preResult.Response.Payload.Any())
+                return new CommandResult($"The Role {arguments.Name} exists in database");
+
+            Task<ConnectorResult<Response<string>>> result = WinApiConnector.RequestPost<Role, Response<string>>($"{context.ConsoleSettings.ServerAddress}:{context.ConsoleSettings.Port}/Api/Configuration/AddRole", role);
+            ConnectorResult<Response<string>> connectorResult = result.Result;
+            if(!connectorResult.IsSuccess)
+                return new CommandResult(connectorResult.Message, false);
+            if(!connectorResult.Response.IsSuccess)
+                return new CommandResult(connectorResult.Response.Code, false);
+            if(connectorResult.Response.Payload == null)
+                return new CommandResult("The payload of reguest is null or empty", false);
+            return new CommandResult($"The Role {arguments.Name} has been added");            
         }
     }
 

@@ -85,18 +85,18 @@ namespace Gravityzero.Console.Utility.Commands
     public class UserArguments
     {
         [Option('n', "name", Required = true, HelpText = "Imię użytkownika.")]
-        public string Name {get; set;}
+        public virtual string Name {get; set;}
 
         [Option('s', "surname", Required = true, HelpText = "Nazwisko użytkownika.")]
-        public string Surname {get; set;}
+        public virtual string Surname {get; set;}
 
         [Option('l', "login", Required = true, HelpText = "Login użytkownika.")]
-        public string Login {get; set;}
+        public virtual string Login {get; set;}
 
         [Option('p', "password", Required = true, HelpText = "Hasło użytkownika.")]
-        public string Password {get; set;}
+        public virtual string Password {get; set;}
 
         [Option('e', "email", Required = true, HelpText = "Email użytkownika.")]
-        public string Email {get; set;}      
+        public virtual string Email {get; set;}      
     }
 }

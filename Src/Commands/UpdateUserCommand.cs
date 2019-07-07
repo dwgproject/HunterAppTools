@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using CommandLine;
 using Gravityzero.Console.Utility.Context;
 using Gravityzero.Console.Utility.Infrastructure;
@@ -18,35 +19,80 @@ namespace Gravityzero.Console.Utility.Commands
 
         protected override CommandResult Execute(ConsoleContext context, UserArgumentsExtension arguments)
         {
-            if(string.IsNullOrEmpty(arguments.Identifier)){
-                System.Console.WriteLine("Procedura aktualizacji konta użytkownika. Postępuje zgodnie z instrukcją");
-                System.Console.Write("Login użytkownika: ");
-                var login = System.Console.ReadLine();
-                System.Console.Write("Hasło użytkownika: ");
-                var password = System.Console.ReadLine();
-                var existUser = GetUser(new User(){Login=login,Password=password});
-                if(existUser==null){
-                    System.Console.WriteLine("Nie istnieje taki użytkownik");
-                }
-                var newUSer = new User(){Identifier=existUser.Identifier, Name=arguments.Name, Password=arguments.Password,Surname=arguments.Surname, Email=arguments.Email};
-                var result = WinApiConnector.RequestPost<User,Response<string>>($"{context.ConsoleSettings.ServerAddress}:{context.ConsoleSettings.Port}/Api/User/",newUSer);
-                return new CommandResult(result.Result.IsSuccess ? "OK" : result.Result.Message);
-            }
-            else{
-                return new CommandResult();
-            }
-        }
+            IList<User> users = new List<User>();
+            User updateUser = new User();
+            Guid identifier = Guid.Empty;
 
-        private User GetUser(User user)
-        {
-            var result = WinApiConnector.RequestPost<User, Response<IEnumerable<User>>>("http://localhost:5000/Api/User/",user);
-            if(result.Result.Response.IsSuccess){
-                return new User(){Identifier=result.Result.Response.Payload.FirstOrDefault().Identifier};
+            if(string.IsNullOrEmpty(arguments.Identifier) && string.IsNullOrEmpty(arguments.Login)){
+
+                Task<ConnectorResult<Response<IEnumerable<User>>>> usersRequest = WinApiConnector.RequestGet<Response<IEnumerable<User>>>($"{context.ConsoleSettings.ServerAddress}:{context.ConsoleSettings.Port}/Api/User/GetAll");
+                ConnectorResult<Response<IEnumerable<User>>> preResponse = usersRequest.Result;
+
+                if(!preResponse.IsSuccess)
+                    return new CommandResult(preResponse.Message, false);
+                if(!preResponse.Response.IsSuccess)
+                    return new CommandResult(preResponse.Response.Code, false);
+                if(!preResponse.Response.Payload.Any())
+                    return new CommandResult("The payload od request is null or empty", false);
+                int index = 1;
+                foreach(var ur in preResponse.Response.Payload){
+                    users.Add(ur);
+                    System.Console.WriteLine($"{index++}. {ur.Login} - {ur.Identifier}");
+                }
+                
+                System.Console.WriteLine($"Wybierz numer użytkownika do aktualizacji 1-{users.Count}");
+                bool shouldWork = true;
+                int choisenOne = 0;
+                do{
+                    string readLine =  System.Console.ReadLine();
+                    bool isParsed = int.TryParse(readLine, out choisenOne);
+                    shouldWork = isParsed ? choisenOne > users.Count : true;
+                }
+                while(shouldWork);
+
+                updateUser.Identifier = users[choisenOne-1].Identifier;
             }
-            else
-            {
-                return null;   
+
+            if(!string.IsNullOrEmpty(arguments.Identifier)){
+                var tmp = Guid.TryParse(arguments.Identifier,out identifier);
+                if(!tmp)
+                    return new CommandResult("Cannot parse identifier from -i param",false);
+
+                updateUser.Identifier = identifier;
             }
+                
+            if(!string.IsNullOrEmpty(arguments.Login) && string.IsNullOrEmpty(arguments.Identifier)){
+                User tmpUser = new User(){Login = arguments.Login};
+                Task<ConnectorResult<Response<IEnumerable<User>>>> userByLogin = WinApiConnector.RequestPost<User, Response<IEnumerable<User>>>($"{context.ConsoleSettings.ServerAddress}:{context.ConsoleSettings.Port}/Api/User/GetByLogin",tmpUser);
+                ConnectorResult<Response<IEnumerable<User>>> preResponse = userByLogin.Result;
+
+                if(!preResponse.IsSuccess)
+                    return new CommandResult(preResponse.Message, false);
+                if(!preResponse.Response.IsSuccess)
+                    return new CommandResult(preResponse.Response.Code, false);
+                if(!preResponse.Response.Payload.Any())
+                    return new CommandResult("The Payload of request is null or empty", false);
+                if(preResponse.Response.Payload.Count() != 1)
+                    return new CommandResult("There is too many results", true);
+                
+                updateUser.Identifier = preResponse.Response.Payload.FirstOrDefault().Identifier;           
+            }
+            
+            updateUser.Name = arguments.Name;
+            updateUser.Surname = arguments.Surname;
+            updateUser.Password = arguments.Password;
+            updateUser.Email = arguments.Email;
+            Task<ConnectorResult<Response<User>>> result = WinApiConnector.RequestPut<User,Response<User>>($"{context.ConsoleSettings.ServerAddress}:{context.ConsoleSettings.Port}/Api/User/Update",updateUser);
+            ConnectorResult<Response<User>> postResponse = result.Result;
+            
+            if(!postResponse.IsSuccess)
+                return new CommandResult(postResponse.Message, false);
+            if(!postResponse.Response.IsSuccess)
+                return new CommandResult(postResponse.Response.Code, false);
+            if(postResponse.Response.Payload == null)
+                return new CommandResult("The payload of response is null or empty",false);
+            
+            return new CommandResult($"The User {updateUser.Identifier} has been updated",true);
         }
     }
     
@@ -54,5 +100,23 @@ namespace Gravityzero.Console.Utility.Commands
     {
         [Option('i',"identifier", Required=false, HelpText="Identyfikator użytkownika")]
         public string Identifier { get; set; }
+
+        [Option('n',"name", Required = false, HelpText="Imie użytkownika")]
+        override public string Name {get;set;}
+
+        [Option('l', "login", Required = false, HelpText = "Login użytkownika.")]
+        override public string Login {get;set;}
+
+        [Option('s', "surname", Required = false, HelpText = "Nazwisko użytkownika.")]
+        override public string Surname {get;set;}
+
+        [Option('p', "password", Required = false, HelpText = "Hasło użytkownika.")]
+        override public string Password {get;set;}
+
+        [Option('e', "email", Required = false, HelpText = "Email użytkownika.")]
+        override public string Email {get;set;}
+
+        [Option('t',"test", Required = false, HelpText = "Parametr testowy")]
+        public string TestParam {get;set;}
     }
 }

@@ -25,26 +25,34 @@ namespace Gravityzero.Console.Utility.Commands
                 return new CommandResult();
             }
 
-            var role = WinApiConnector.RequestPost<string, Response<IEnumerable<Role>>>($"{context.ConsoleSettings.ServerAddress}:{context.ConsoleSettings.Port}/Api/Configuration/GetRole",arguments.Name);
-                     
-            if(!role.Result.Response.IsSuccess){
-                return new CommandResult(role.Result.Message);
-            }
+            Task<ConnectorResult<Response<IEnumerable<Role>>>> role = WinApiConnector.RequestPost<string, Response<IEnumerable<Role>>>($"{context.ConsoleSettings.ServerAddress}:{context.ConsoleSettings.Port}/Api/Configuration/GetRole",arguments.Name);
+            ConnectorResult<Response<IEnumerable<Role>>> preResult = role.Result;
+            if(!preResult.IsSuccess)
+                return new CommandResult(preResult.Message, false);
+            if(!preResult.Response.IsSuccess)
+                return new CommandResult(preResult.Response.Code, false);
+            if(!preResult.Response.Payload.Any())
+                return new CommandResult($"The Role {arguments.Name} doesn't exist in database", false);
 
-            if(role == null){
-                return new CommandResult("Zapytanie nie powiodło się");
+            if(preResult.Response.Payload.Count() != 1){
+                return new CommandResult(preResult.Response.Payload.Count() == 0 ? "Nie można zmienić roli, która nie istnieje" : "Wiecej niż jeden wynik", false);
             } 
-            if(role.Result.Response.Payload.Count() != 1){
-                return new CommandResult(role.Result.Response.Payload.Count() == 0 ? "Nie można zmienić roli, która nie istnieje" : "Wiecej niż jeden wynik");
-            } 
-            var existRole = role.Result.Response.Payload.FirstOrDefault();
                 
-            if(existRole == null){
-                return new CommandResult("NULL");
-            }
-            var result = WinApiConnector.RequestPut<Role, Response<Role>>($"{context.ConsoleSettings.ServerAddress}:{context.ConsoleSettings.Port}/Api/Configuration/UpdateRole",
-                    new Role(){Identifier = existRole.Identifier, Name = arguments.Rename});
-            return new CommandResult(result.Result.IsSuccess ? "OK" : result.Result.Message);           
+            Task<ConnectorResult<Response<string>>> result = WinApiConnector.RequestPut<Role, Response<string>>($"{context.ConsoleSettings.ServerAddress}:{context.ConsoleSettings.Port}/Api/Configuration/UpdateRole",
+                    new Role()
+                    {
+                        Identifier = preResult.Response.Payload.FirstOrDefault().Identifier, 
+                        Name = arguments.Rename
+                    });
+            ConnectorResult<Response<string>> connectorResult = result.Result;
+            if(!connectorResult.IsSuccess)
+                return new CommandResult(connectorResult.Message, false);
+            if(!connectorResult.Response.IsSuccess)
+                return new CommandResult(connectorResult.Response.Code, false);
+            if(connectorResult.Response.Payload == null)
+                return new CommandResult("The payload of response is null or empty",false);
+            
+            return new CommandResult($"The Role {arguments.Rename} has been updated",true);         
         }
     }
 }
