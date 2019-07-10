@@ -25,7 +25,8 @@ namespace Gravityzero.Console.Utility.Commands
                 return new CommandResult();
             }
 
-            Task<ConnectorResult<Response<IEnumerable<Role>>>> role = WinApiConnector.RequestPost<string, Response<IEnumerable<Role>>>($"{context.ConsoleSettings.ServerAddress}:{context.ConsoleSettings.Port}/Api/Configuration/GetRole",arguments.Name);
+            Task<ConnectorResult<Response<IEnumerable<Role>>>> role = WinApiConnector.RequestGet<Response<IEnumerable<Role>>>($"{context.ConsoleSettings.ServerAddress}:{context.ConsoleSettings.Port}/Api/Configuration/GetRole/"+
+                                $"{arguments.Name.ToLower()}");
             ConnectorResult<Response<IEnumerable<Role>>> preResult = role.Result;
             if(!preResult.IsSuccess)
                 return new CommandResult(preResult.Message, false);
@@ -42,7 +43,7 @@ namespace Gravityzero.Console.Utility.Commands
                     new Role()
                     {
                         Identifier = preResult.Response.Payload.FirstOrDefault().Identifier, 
-                        Name = arguments.Rename
+                        Name = arguments.Rename.ToLower()
                     });
             ConnectorResult<Response<string>> connectorResult = result.Result;
             if(!connectorResult.IsSuccess)

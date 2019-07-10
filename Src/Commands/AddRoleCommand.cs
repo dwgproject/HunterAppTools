@@ -18,8 +18,9 @@ namespace Gravityzero.Console.Utility.Commands
 
         protected override CommandResult Execute(ConsoleContext context, RoleArgument arguments)
         {
-            Role role = new Role(){ Name = arguments.Name};
-            Task<ConnectorResult<Response<IEnumerable<Role>>>> checkIfExist = WinApiConnector.RequestPost<string, Response<IEnumerable<Role>>>($"{context.ConsoleSettings.ServerAddress}:{context.ConsoleSettings.Port}/Api/Configuration/GetRole",arguments.Name);
+            Role role = new Role(){ Name = arguments.Name.ToLower()};
+            Task<ConnectorResult<Response<IEnumerable<Role>>>> checkIfExist = WinApiConnector.RequestGet<Response<IEnumerable<Role>>>($"{context.ConsoleSettings.ServerAddress}:{context.ConsoleSettings.Port}/Api/Configuration/GetRole/"+
+                            $"{arguments.Name.ToLower()}");
             ConnectorResult<Response<IEnumerable<Role>>> preResult = checkIfExist.Result;
             if(!preResult.IsSuccess)
                 return new CommandResult(preResult.Message, false);

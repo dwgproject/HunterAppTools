@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Gravityzero.Console.Utility.Context;
 using Gravityzero.Console.Utility.Infrastructure;
 using Gravityzero.Console.Utility.Model;
@@ -15,15 +16,22 @@ namespace Gravityzero.Console.Utility.Commands
 
         public CommandResult Execute(ConsoleContext context)
         {
-            var result = WinApiConnector.RequestGet<Response<IEnumerable<Animal>>>($"{context.ConsoleSettings.ServerAddress}:{context.ConsoleSettings.Port}/Api/Animal/Get");
-            if(result.Result.Response.Payload.Count()>0){
-                int i = 1;
-                foreach(var animal in result.Result.Response.Payload){
-                    System.Console.WriteLine($"{i}. {animal.Name.ToUpper()}");
-                    i++;
-                }
+            Task<ConnectorResult<Response<IEnumerable<Animal>>>> result = WinApiConnector.RequestGet<Response<IEnumerable<Animal>>>($"{context.ConsoleSettings.ServerAddress}:{context.ConsoleSettings.Port}/Api/Configuration/GetAllAnimals");
+            ConnectorResult<Response<IEnumerable<Animal>>> connectorResult = result.Result;
+
+            if(!connectorResult.IsSuccess)
+                return new CommandResult(connectorResult.Message, false);
+            if(!connectorResult.Response.IsSuccess)
+                return new CommandResult(connectorResult.Response.Code, false);
+            if(!connectorResult.Response.Payload.Any())
+                return new CommandResult("The payload of request is null or empty", false);
+            
+            int index =1;
+            foreach(var animal in connectorResult.Response.Payload){
+                System.Console.WriteLine($"{index++}. {animal.Name.ToUpper()}");
             }
-            return new CommandResult();
+            
+            return new CommandResult("OK",true);
         }
     }
 }

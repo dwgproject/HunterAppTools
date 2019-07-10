@@ -63,7 +63,8 @@ namespace Gravityzero.Console.Utility.Commands
                 
             if(!string.IsNullOrEmpty(arguments.Login) && string.IsNullOrEmpty(arguments.Identifier)){
                 User tmpUser = new User(){Login = arguments.Login};
-                Task<ConnectorResult<Response<IEnumerable<User>>>> userByLogin = WinApiConnector.RequestGet<Response<IEnumerable<User>>>($"{context.ConsoleSettings.ServerAddress}:{context.ConsoleSettings.Port}/Api/User/GetByLogin/"+$"{arguments.Login}");
+                Task<ConnectorResult<Response<IEnumerable<User>>>> userByLogin = WinApiConnector.RequestGet<Response<IEnumerable<User>>>($"{context.ConsoleSettings.ServerAddress}:{context.ConsoleSettings.Port}/Api/User/GetByLogin/"
+                                    +$"{arguments.Login}");
                 ConnectorResult<Response<IEnumerable<User>>> preResponse = userByLogin.Result;
 
                 if(!preResponse.IsSuccess)

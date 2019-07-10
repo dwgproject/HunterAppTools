@@ -19,7 +19,8 @@ namespace Gravityzero.Console.Utility.Commands
 
         protected override CommandResult Execute(ConsoleContext context, RoleArgument arguments)
         {
-            Task<ConnectorResult<Response<IEnumerable<Role>>>> role = WinApiConnector.RequestPost<string, Response<IEnumerable<Role>>>($"{context.ConsoleSettings.ServerAddress}:{context.ConsoleSettings.Port}/Api/Configuration/GetRole",arguments.Name);
+            Task<ConnectorResult<Response<IEnumerable<Role>>>> role = WinApiConnector.RequestGet<Response<IEnumerable<Role>>>($"{context.ConsoleSettings.ServerAddress}:{context.ConsoleSettings.Port}/Api/Configuration/GetRole/"+
+                            $"{arguments.Name.ToLower()}");
             ConnectorResult<Response<IEnumerable<Role>>> preResult = role.Result;
             if(!preResult.IsSuccess)
                 return new CommandResult(preResult.Message, false);
@@ -37,7 +38,7 @@ namespace Gravityzero.Console.Utility.Commands
                 return new CommandResult(connectorResult.Response.Code, false);
             if(string.IsNullOrEmpty(connectorResult.Response.Payload))
                 return new CommandResult("The payload of response <DELETE USER > is null or empty ",false);
-            return new CommandResult($"The User {arguments.Name} has been deleted",true);
+            return new CommandResult($"The Role {arguments.Name} has been deleted",true);
         }
     }
 }

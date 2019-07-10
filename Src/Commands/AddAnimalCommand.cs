@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using CommandLine;
 using Gravityzero.Console.Utility.Context;
 using Gravityzero.Console.Utility.Infrastructure;
@@ -17,8 +18,23 @@ namespace Gravityzero.Console.Utility.Commands
 
         protected override CommandResult Execute(ConsoleContext context, AnimalArguments arguments)
         {
-            var result = WinApiConnector.RequestPost<Animal, Response<Animal>>($"{context.ConsoleSettings.ServerAddress}:{context.ConsoleSettings.Port}/Api/Animal/Add",new Animal(){Name = arguments.Name});
-            return new CommandResult(result.Result.IsSuccess ? "OK" : result.Result.Message);
+            if(string.IsNullOrEmpty(arguments.Name))
+                return new CommandResult("The name of animal is required, use param -n <NAME>");
+            Task<ConnectorResult<Response<string>>> result = WinApiConnector.RequestPost<Animal, Response<string>>($"{context.ConsoleSettings.ServerAddress}:{context.ConsoleSettings.Port}/Api/Configuration/AddAnimal",
+                                new Animal()
+                                {
+                                    Name = arguments.Name.ToLower()
+                                });
+            ConnectorResult<Response<string>> connectorResult = result.Result;
+            
+            if(!connectorResult.IsSuccess)
+                return new CommandResult(connectorResult.Message, false);
+            if(!connectorResult.Response.IsSuccess)
+                return new CommandResult(connectorResult.Response.Code, false);
+            if(string.IsNullOrEmpty(connectorResult.Response.Payload))
+                return new CommandResult("The payload of request is null or empty", false);
+            
+            return new CommandResult(connectorResult.Response.Payload, true);
         }
     }
 

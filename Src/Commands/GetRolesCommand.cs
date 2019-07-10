@@ -16,7 +16,6 @@ namespace Gravityzero.Console.Utility.Commands
 
         public CommandResult Execute(ConsoleContext context)
         {
-            List<Role> listRoles = new List<Role>();
             Task<ConnectorResult<Response<IEnumerable<Role>>>> result = WinApiConnector.RequestGet<Response<IEnumerable<Role>>>($"{context.ConsoleSettings.ServerAddress}:{context.ConsoleSettings.Port}/Api/Configuration/GetAllRoles");
             ConnectorResult<Response<IEnumerable<Role>>> connectorResult = result.Result;
 
@@ -26,14 +25,12 @@ namespace Gravityzero.Console.Utility.Commands
                 return new CommandResult(connectorResult.Response.Code, false);
             if(!connectorResult.Response.Payload.Any())
                 return new CommandResult("The payload of reguest is null or empty", false);            
-                       
+
+            int index = 1;    
             foreach(var role in connectorResult.Response.Payload){
-                System.Console.WriteLine($"{role.Name} -- ({role.Identifier})".PadLeft(70));
-                listRoles.Add(new Role(){Identifier=role.Identifier, Name = role.Name});
-            }                
-              
+                System.Console.WriteLine($"{index++}. {role.Name.ToUpper()}");
+            }                             
             return new CommandResult("OK", true);        
         }
     }
-
 }
