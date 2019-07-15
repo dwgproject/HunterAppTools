@@ -22,6 +22,9 @@ namespace Gravityzero.Console.Utility.Directories
             Commands.Add("addhunting",typeof(AddHuntingCommand));
             Commands.Add("deletehunting", typeof(DeleteHuntingCommand));
             Commands.Add("addquarry", typeof(AddQuarryCommand));
+            Commands.Add("getquarries", typeof(GetQuarriesCommand));
+            Commands.Add("deletequarry", typeof(DeleteQuarryCommand));
+            Commands.Add("updatequarry", typeof(UpdateQuarryCommand));
             Directories= new Dictionary<string, IDirectory>();
         }
 
