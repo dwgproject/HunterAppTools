@@ -17,6 +17,7 @@ namespace Gravityzero.Console.Utility.Directories
             Commands.Add("updaterole", typeof(UpdateRoleCommand));
             Commands.Add("addanimal", typeof(AddAnimalCommand));
             Commands.Add("getanimals", typeof(GetAnimalsCommand));
+            Commands.Add("deleteanimal", typeof(DeleteAnimalCommand));
             Commands.Add("updateanimal", typeof(UpdateAnimalCommand));
             Commands.Add("updatesettings", typeof(ChangeAppSettingsCommand));
             Commands.Add("showsettings", typeof(ShowSettingsCommand));
