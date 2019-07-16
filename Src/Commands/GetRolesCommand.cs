@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Gravityzero.Console.Utility.Commands;
 using Gravityzero.Console.Utility.Context;
 using Gravityzero.Console.Utility.Infrastructure;
 using Gravityzero.Console.Utility.Model;
@@ -26,11 +25,8 @@ namespace Gravityzero.Console.Utility.Commands
             if(!connectorResult.Response.Payload.Any())
                 return new CommandResult("The payload of reguest is null or empty", false);            
 
-            int index = 1;    
-            foreach(var role in connectorResult.Response.Payload){
-                System.Console.WriteLine($"{index++}. {role.Name.ToUpper()}");
-            }                             
-            return new CommandResult("OK", true);        
+            TablePresenter table = new TablePresenter(new [] {"Identifier", "Name"}, connectorResult.Response.Payload);
+            return new CommandResult(table.Render(), true);        
         }
     }
 }
