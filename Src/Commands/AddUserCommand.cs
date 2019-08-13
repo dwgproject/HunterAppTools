@@ -40,12 +40,13 @@ namespace Gravityzero.Console.Utility.Commands
 
             int index = 1;
             foreach(Role item in roleArray)
-                System.Console.WriteLine($"{ index++ }. { item.Name }");
+                System.Console.WriteLine($"{ index++ }. { item.Name.ToUpper() }");
 
             int chosenRoleIndex = 0;
             bool shouldWork = true;
             do
             {
+                System.Console.Write("Wybierz numer roli: ");
                 string choice = System.Console.ReadLine();
                 bool isParsed = int.TryParse(choice, out chosenRoleIndex);
                 shouldWork = isParsed ? chosenRoleIndex > roleArray.Length : true;
@@ -57,25 +58,25 @@ namespace Gravityzero.Console.Utility.Commands
                 Identifier = roleArray[chosenRoleIndex - 1].Identifier
             };
             
-            var result = WinApiConnector.RequestPost<Model.User, Response<User>>($"{context.ConsoleSettings.ServerAddress}:{context.ConsoleSettings.Port}/Api/User/SignUp",
+            var result = WinApiConnector.RequestPost<Model.User, Response<string>>($"{context.ConsoleSettings.ServerAddress}:{context.ConsoleSettings.Port}/Api/User/SignUp",
                         new Model.User()
                         {
-                            Login = arguments.Login, 
-                            Name = arguments.Name,
+                            Login = arguments.Login.ToLower(), 
+                            Name = arguments.Name.ToLower(),
                             Password = arguments.Password, 
-                            Surname = arguments.Surname, 
+                            Surname = arguments.Surname.ToLower(), 
                             Role = role, 
-                            Email = arguments.Email
+                            Email = arguments.Email.ToLower()
                         });
 
-            ConnectorResult<Response<User>> postResult = result.Result;
+            ConnectorResult<Response<string>> postResult = result.Result;
             if (!postResult.IsSuccess)
                 return new CommandResult(postResult.Message, false);
             
             if (!postResult.Response.IsSuccess)
                 return new CommandResult(postResult.Response.Code, false);
 
-            if (postResult.Response.Payload == null)
+            if (string.IsNullOrEmpty(postResult.Response.Payload))
                 return new CommandResult("The payload of user is empty.", false);
 
             return new CommandResult("The user has been added.", true);
