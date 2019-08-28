@@ -9,7 +9,8 @@ namespace Gravityzero.Console.Utility.Tools
         public static string SettingsPath()
         {
             string appName = ConsoleEngine.GetAppInfo().ProductName.Replace(" ",  string.Empty);
-            string settings = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), appName);
+            //string settings = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), appName);
+            string settings = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop),appName);
             if (!Directory.Exists(settings))
             {
                 try

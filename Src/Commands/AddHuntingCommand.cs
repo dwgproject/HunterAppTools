@@ -120,6 +120,9 @@ namespace Gravityzero.Console.Utility.Commands
 
     public class HuntingArguments
     {
+        [Option('i',"identifier", Required = false, HelpText = "identyfikator polowania")]
+        public string Identifier { get; set; }
+
         [Option('l', "leader", Required=false, HelpText="Lider polowania")]
         public string Leader { get; set; }
 
@@ -129,7 +132,10 @@ namespace Gravityzero.Console.Utility.Commands
         [Option('q', "quarries", Required=false, HelpText="Zwierzyna łowna na polowanie")]
         public string Quarries { get; set; }
 
-        [Option('p', "partial", Required=true, HelpText="Ilość miotów na polowanie")]
+        [Option('h', "partialhunting", Required=false, HelpText="Ilość miotów na polowanie")]
         public int PartialHunting { get; set; }
+
+        [Option('p', "path", Required = false, HelpText = "path do pliku")]
+        public string Path { get; set; }
     }
 }

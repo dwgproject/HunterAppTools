@@ -62,7 +62,7 @@ namespace Gravityzero.Console.Utility.Tools
             }
             
             settings = new Dictionary<string,object>();
-            settings.Add("address", "localhost");
+            settings.Add("address", "http://localhost");
             settings.Add("port", "5000");    
             new AppConfiguration(settings).
                                     SaveConfiguration(settingsFilePath);
