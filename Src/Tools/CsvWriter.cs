@@ -39,7 +39,7 @@ namespace Gravityzero.Console.Utility.Tools
                         else{
                             propertyValue = oneObject.GetValue(item, null);
                         }                    
-                        newLine.Append($"{propertyValue},");
+                        newLine.Append($"{propertyValue};");
                     }
                     tmp.AppendLine(newLine.ToString());
                 }

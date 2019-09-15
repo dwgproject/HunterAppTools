@@ -19,13 +19,26 @@ namespace Gravityzero.Console.Utility.Commands
         {
             if(string.IsNullOrEmpty(arguments.Identifier))
                 return new CommandResult("Identifier is required to update hunting event", false);
-            // if(!string.IsNullOrEmpty(arguments.Path)){
-
-            //     var file = new CsvReader<Hunting>();
-            //     var huntingFromFile = file.LoadFile(arguments.Path);
-            //     //dokończyć
-            // }
-            
+            if(!string.IsNullOrEmpty(arguments.Path)){
+                IDictionary<string,string> pathDictionary = new Dictionary<string,string>();
+                IReader<PathClass> pathFile = new CsvReader<PathClass>();
+                var pathsData = pathFile.LoadFile(arguments.Path);
+                pathDictionary = pathsData.ToDictionary(x=>x.Path,y=>y.TypeName);
+                
+                if(pathDictionary.ContainsKey("User")){
+                    IReader<User> userCsv = new CsvReader<User>();
+                    var usersListFromCsv = userCsv.LoadFile(pathDictionary["User"]);
+                }
+                if(pathDictionary.ContainsKey("Quarry")){
+                    IReader<Quarry> quarryCsv = new CsvReader<Quarry>();
+                    var quarriesFromCsv = quarryCsv.LoadFile(pathDictionary["Quarry"]);
+                }
+                if(pathDictionary.ContainsKey("Leader")){
+                    IReader<User> leaderCsv = new CsvReader<User>();
+                    var leaderFromCsv = leaderCsv.LoadFile(pathDictionary["Leader"]);
+                }
+            }
+          
             Task<ConnectorResult<Response<IEnumerable<Hunting>>>> preRequest = WinApiConnector.RequestGet<Response<IEnumerable<Hunting>>>($"{context.ConsoleSettings.ServerAddress}:{context.ConsoleSettings.Port}/Api/Hunting/GetHunting/{arguments.Identifier}");
             ConnectorResult<Response<IEnumerable<Hunting>>> preResponse = preRequest.Result;
             if(!preResponse.IsSuccess)
@@ -53,5 +66,11 @@ namespace Gravityzero.Console.Utility.Commands
 
             return new CommandResult("OK", true);
         }
+    }
+
+    public class PathClass
+    {
+        public string Path { get; set; }
+        public string TypeName { get; set; }
     }
 }

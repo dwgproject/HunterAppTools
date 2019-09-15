@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Gravityzero.Console.Utility.Commands;
 using Gravityzero.Console.Utility.Context;
 using Gravityzero.Console.Utility.Infrastructure;
+using Gravityzero.Console.Utility.Model;
 
 namespace Gravityzero.Console.Utility.Directories
 {
