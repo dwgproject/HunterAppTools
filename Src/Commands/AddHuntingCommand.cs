@@ -24,6 +24,8 @@ namespace Gravityzero.Console.Utility.Commands
 
         protected override CommandResult Execute(ConsoleContext context, HuntingArguments arguments)
         {
+
+
             IList<User> usersList = new List<User>();
             IList<UserHunting> users = new List<UserHunting>();
             IList<Animal> animals = new List<Animal>();
@@ -31,79 +33,113 @@ namespace Gravityzero.Console.Utility.Commands
             IList<PartialHunting> partialHuntings = new List<PartialHunting>();
             User leader = new User();
             Hunting hunting = new Hunting();
-            Task<ConnectorResult<Response<IEnumerable<User>>>> usersRequest = WinApiConnector.RequestGet<Response<IEnumerable<User>>>($"{context.ConsoleSettings.ServerAddress}:{context.ConsoleSettings.Port}/Api/User/GetAll");
-            ConnectorResult<Response<IEnumerable<User>>> preResult = usersRequest.Result;
-            if(!preResult.IsSuccess)
-                return new CommandResult(preResult.Message, false);
-            if(!preResult.Response.IsSuccess)
-                return new CommandResult(preResult.Response.Code, false);
-            if(!preResult.Response.Payload.Any())
-                return new CommandResult("The payload of response is null or empty", false);
-                        
-            foreach (var item in preResult.Response.Payload){
-                usersList.Add(item);
+
+            if(!string.IsNullOrEmpty(arguments.Path)){
+                IDictionary<string,string> pathDictionary = new Dictionary<string,string>();
+                IReader<PathClass> pathFile = new CsvReader<PathClass>();
+                var pathsData = pathFile.LoadFile(arguments.Path);
+                pathDictionary = pathsData.ToDictionary(x=>x.Path,y=>y.TypeName);
+
+                if(pathDictionary.ContainsKey("User")){
+                    IReader<User> userCsv = new CsvReader<User>();
+                    var usersListFromCsv = userCsv.LoadFile(pathDictionary["User"]);
+                    foreach (var user in usersListFromCsv)
+                    {
+                        users.Add(new UserHunting(){UserId=user.Identifier});
+                    }
+                    hunting.Users = users;
+                }
+                if(pathDictionary.ContainsKey("Animal")){
+                    IReader<Animal> animalCsv = new CsvReader<Animal>();
+                    var animalsFromCsv = animalCsv.LoadFile(pathDictionary["Animal"]);
+                    foreach (var animal in animalsFromCsv)
+                    {
+                        quarries.Add(new Quarry(){Animal=animal,Amount=10});
+                    }
+                    hunting.Quarries = quarries;
+                }
+                if(pathDictionary.ContainsKey("Leader")){
+                    IReader<User> leaderCsv = new CsvReader<User>();
+                    var leaderFromCsv = leaderCsv.LoadFile(pathDictionary["Leader"]);
+                    hunting.Leader = leaderFromCsv.FirstOrDefault();
+                }
             }
 
-            Task<ConnectorResult<Response<IEnumerable<Animal>>>> animalsList = WinApiConnector.RequestGet<Response<IEnumerable<Animal>>>($"{context.ConsoleSettings.ServerAddress}:{context.ConsoleSettings.Port}/Api/COnfiguration/GetAllAnimals");
-            ConnectorResult<Response<IEnumerable<Animal>>> animalsResult = animalsList.Result;
-            if(!animalsResult.IsSuccess)
-                return new CommandResult(animalsResult.Message, false);
-            if(!animalsResult.Response.IsSuccess)
-                return new CommandResult(animalsResult.Response.Code, false);
-            if(!animalsResult.Response.Payload.Any())
-                return new CommandResult("The payload of response is null or empty", false);
-            
-            foreach (var item in animalsResult.Response.Payload){
-                animals.Add(item);               
-            }
-                                 
-            if(string.IsNullOrEmpty(arguments.Leader)){
+            if(string.IsNullOrEmpty(arguments.Path)){
+                Task<ConnectorResult<Response<IEnumerable<User>>>> usersRequest = WinApiConnector.RequestGet<Response<IEnumerable<User>>>($"{context.ConsoleSettings.ServerAddress}:{context.ConsoleSettings.Port}/Api/User/GetAll");
+                ConnectorResult<Response<IEnumerable<User>>> preResult = usersRequest.Result;
+                if(!preResult.IsSuccess)
+                    return new CommandResult(preResult.Message, false);
+                if(!preResult.Response.IsSuccess)
+                    return new CommandResult(preResult.Response.Code, false);
+                if(!preResult.Response.Payload.Any())
+                    return new CommandResult("The payload of response is null or empty", false);
+                            
+                foreach (var item in preResult.Response.Payload){
+                    usersList.Add(item);
+                }
+
+                Task<ConnectorResult<Response<IEnumerable<Animal>>>> animalsList = WinApiConnector.RequestGet<Response<IEnumerable<Animal>>>($"{context.ConsoleSettings.ServerAddress}:{context.ConsoleSettings.Port}/Api/COnfiguration/GetAllAnimals");
+                ConnectorResult<Response<IEnumerable<Animal>>> animalsResult = animalsList.Result;
+                if(!animalsResult.IsSuccess)
+                    return new CommandResult(animalsResult.Message, false);
+                if(!animalsResult.Response.IsSuccess)
+                    return new CommandResult(animalsResult.Response.Code, false);
+                if(!animalsResult.Response.Payload.Any())
+                    return new CommandResult("The payload of response is null or empty", false);
                 
-                System.Console.WriteLine("Wybierz lidera");
-                int index = 1;
+                foreach (var item in animalsResult.Response.Payload){
+                    animals.Add(item);               
+                }
+                if(string.IsNullOrEmpty(arguments.Leader)){
+                
+                    System.Console.WriteLine("Wybierz lidera");
+                    int index = 1;
+                    foreach (var item in usersList)
+                    {
+                        System.Console.WriteLine($"{index++}. {item.Name}, {item.Surname}");
+                    }
+                    bool shouldWork = true;
+                    int choisenOne = 0;
+
+                    do{
+                        string choiceLeader = System.Console.ReadLine();
+                        bool isParsed = int.TryParse(choiceLeader,out choisenOne);
+                        shouldWork = isParsed ? choisenOne > usersList.Count() : true;
+                    }while(shouldWork);
+
+                    leader = usersList[choisenOne-1];
+                }
+                foreach (var item in animals)
+                {
+                    quarries.Add(new Quarry()
+                        {
+                            Animal = item,
+                            Amount = 3
+                        });
+                }
+
                 foreach (var item in usersList)
                 {
-                    System.Console.WriteLine($"{index++}. {item.Name}, {item.Surname}");
+                    users.Add(new UserHunting(){UserId = item.Identifier});
                 }
-                bool shouldWork = true;
-                int choisenOne = 0;
 
-                do{
-                    string choiceLeader = System.Console.ReadLine();
-                    bool isParsed = int.TryParse(choiceLeader,out choisenOne);
-                    shouldWork = isParsed ? choisenOne > usersList.Count() : true;
-                }while(shouldWork);
+                hunting.Leader = leader;
+                hunting.Quarries = quarries;
+                hunting.Users = users;
 
-                leader = usersList[choisenOne-1];
             }
-            foreach (var item in animals)
-            {
-                quarries.Add(new Quarry()
-                    {
-                        Animal = item,
-                        Amount = 3
+
+                for(int i=0; i<arguments.PartialHunting; i++){
+                    partialHuntings.Add(new PartialHunting(){
+                        Number = i+1,
+                        Status = Status.Create,
+                        PartialHunters = new List<PartialHuntersList>()
                     });
-            }
-
-            foreach (var item in usersList)
-            {
-                users.Add(new UserHunting(){UserId = item.Identifier});
-            }
-
-            hunting.Leader = leader;
-            hunting.Quarries = quarries;
-            hunting.Users = users;
-
-            for(int i=0; i<arguments.PartialHunting; i++){
-                partialHuntings.Add(new PartialHunting(){
-                    Number = i+1,
-                    Status = Status.Create,
-                    PartialHunters = new List<PartialHuntersList>()
-                });
-            }
+                }
             
             hunting.PartialHuntings = partialHuntings;
-            hunting.Description = "Pierwsze";
+            hunting.Description = arguments.Description;
 
             Task<ConnectorResult<Response<string>>> addResult = WinApiConnector.RequestPost<Hunting,Response<string>>($"{context.ConsoleSettings.ServerAddress}:{context.ConsoleSettings.Port}/Api/Hunting/AddHunting",hunting);
             ConnectorResult<Response<string>> connectorResult = addResult.Result;
@@ -134,6 +170,9 @@ namespace Gravityzero.Console.Utility.Commands
 
         [Option('h', "partialhunting", Required=false, HelpText="Ilość miotów na polowanie")]
         public int PartialHunting { get; set; }
+
+        [Option('d',"description",Required = false, HelpText="Opis polowania")]
+        public string Description { get; set; }
 
         [Option('p', "path", Required = false, HelpText = "path do pliku")]
         public string Path { get; set; }

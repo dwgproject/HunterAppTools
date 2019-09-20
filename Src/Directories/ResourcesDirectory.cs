@@ -14,6 +14,7 @@ namespace Gravityzero.Console.Utility.Directories
             Commands.Add("user",typeof(CreateCsvCommand<User>));
             Commands.Add("role", typeof(CreateCsvCommand<Role>));
             Commands.Add("hunting", typeof(CreateCsvCommand<Hunting>));
+            Commands.Add("animal",typeof(CreateCsvCommand<Animal>));
         }
         public string Name => "Resources";
 
